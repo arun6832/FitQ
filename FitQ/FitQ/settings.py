@@ -60,7 +60,7 @@ ROOT_URLCONF = 'FitQ.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['Template'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
