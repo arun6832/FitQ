@@ -362,15 +362,51 @@ https://www.tooplate.com/view/2119-gymso-fitness
      HERO              
   -----------------------------------------*/
 
-  .hero {
-    background-image: url('../images/hero-bg.jpg');
+  /* .hero {
+    background-image: url("{% static 'images/Homemedia/Backgroundvideo.mp4' %}");
     background-size: cover;
     background-position: top;
     background-repeat: no-repeat;
     vertical-align: middle;
     min-height: 100vh;
     position: relative;
-  }
+  } */
+
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.background-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: translate(-50%, -50%);
+    z-index: -1; /* Ensure the video is behind the content */
+}
+
+.bg-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Adjust the opacity for a darker overlay */
+    z-index: 0; /* Ensure the overlay is above the video but below the content */
+}
+
+.hero-text {
+    position: relative;
+    z-index: 1; /* Ensure the text is above the video and overlay */
+}
+
 
 
   /*---------------------------------------
