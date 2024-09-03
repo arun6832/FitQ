@@ -72,7 +72,8 @@ https://www.tooplate.com/view/2119-gymso-fitness
 
 
      <!-- HERO -->
-     <section class="hero d-flex flex-column justify-content-center align-items-center" id="home">
+
+     <!-- <section class="hero d-flex flex-column justify-content-center align-items-center" id="home">
 
             <div class="bg-overlay"></div>
 
@@ -95,7 +96,34 @@ https://www.tooplate.com/view/2119-gymso-fitness
 
                     </div>
                </div>
-     </section>
+     </section> -->
+    <!-- HERO -->
+    <section class="hero d-flex flex-column justify-content-center align-items-center" id="home">
+
+        <!-- Video Background -->
+        <video autoplay muted loop playsinline class="background-video">
+            <source src="{% static 'images/Homemedia/Backgroundvideo.mp4' %}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+
+        <!-- Overlay -->
+        <div class="bg-overlay"></div>
+
+        <!-- Content -->
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-10 mx-auto col-12">
+                    <div class="hero-text mt-5 text-center">
+                        <h6 data-aos="fade-up" data-aos-delay="300">Take control of your health, one habit at a time!</h6>
+                        <h1 class="text-white" data-aos="fade-up" data-aos-delay="500">Your personalized wellness journey starts here</h1>
+                        <a href="#feature" class="btn custom-btn mt-3" data-aos="fade-up" data-aos-delay="600">Start Today</a>
+                        <a href="#about" class="btn custom-btn bordered mt-3" data-aos="fade-up" data-aos-delay="700">learn more</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
 
 
      <section class="feature" id="feature">
