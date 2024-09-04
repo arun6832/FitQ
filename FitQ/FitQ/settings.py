@@ -13,11 +13,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-<<<<<<< HEAD
 ALLOWED_HOSTS = ['*']
-=======
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
->>>>>>> 9e943146dc7ca9ef60eb106f1b2bcf7cae267d65
 
 # Application definition
 INSTALLED_APPS = [
@@ -99,11 +95,7 @@ GOOGLE_OAUTH_CLIENT_ID = os.getenv('GOOGLE_OAUTH_CLIENT_ID')
 # Logging configuration
 LOGGING = {
     'version': 1,
-<<<<<<< HEAD
     'disable_existing_loggers': True,
-=======
-    'disable_existing_loggers': False,
->>>>>>> 9e943146dc7ca9ef60eb106f1b2bcf7cae267d65
     'handlers': {
         'file': {
             'level': 'DEBUG',
