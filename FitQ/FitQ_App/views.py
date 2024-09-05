@@ -14,9 +14,6 @@ def sign_in(request):
 
 @csrf_exempt
 def auth_receiver(request):
-    """
-    Google calls this URL after the user has signed in with their Google account.
-    """
     token = request.POST.get('credential')
 
     try:
