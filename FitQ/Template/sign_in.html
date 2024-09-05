@@ -1,88 +1,152 @@
 {% load static %}
-{% block content %}
 <!DOCTYPE html>
+<!-- Coding by CodingLab | www.codinglabweb.com-->
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <title>Login Page</title>
-    <script src="https://accounts.google.com/gsi/client" async></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Login and Signup Form</title>
 
-        .container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/userlogin/style.css' %}">
 
-        img {
-            border-radius: 50%;
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            margin-top: 10px;
-        }
-
-        p {
-            color: #333;
-            margin: 10px 0;
-        }
-
-        a {
-            color: #007bff;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        .g_id_signin {
-            margin-top: 20px;
-        }
-    </style>
+    <!-- Boxicons CSS -->
+    <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
 </head>
 
 <body>
+    <section class="container forms">
+        <!-- Login Form -->
+        <div class="form login">
+            <div class="form-content">
+                <header>Login</header>
+                <form action="#">
+                    <div class="field input-field">
+                        <input type="email" placeholder="Email" class="input">
+                    </div>
 
-    <div class="container">
-        {% if request.session.user_data %}
-        <div>
-            <p>Hi {{ request.session.user_data.given_name }} 🙂</p>
-            <p>Your email is {{ request.session.user_data.email }}</p>
-            <img src="{{ request.session.user_data.picture }}" alt="User picture">
-            <p>Click here to <a href="/sign-out">Sign out</a></p>
-        </div>
-        {% else %}
-        <div>
-            <p>Hi there 🙂 </p>
-            <p>Click below to sign in with Google</p>
-            <div id="g_id_onload"
-                data-client_id="320906098691-17sbvs8jnf5eu09ibk8j1ma4vjslauh1.apps.googleusercontent.com"
-                data-context="signin" data-ux_mode="popup" data-login_uri="http://127.0.0.1:8000/user_login"
-                data-auto_prompt="false">
+                    <div class="field input-field">
+                        <input type="password" placeholder="Password" class="password">
+                        <i class='bx bx-hide eye-icon'></i>
+                    </div>
+
+                    <div class="form-link">
+                        <a href="#" class="forgot-pass">Forgot password?</a>
+                    </div>
+
+                    <div class="field button-field">
+                        <button>Login</button>
+                    </div>
+                </form>
+
+                <div class="form-link">
+                    <span>Don't have an account? <a href="#" class="link signup-link">Signup</a></span>
+                </div>
             </div>
 
-            <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="outline"
-                data-text="continue_with" data-size="large" data-logo_alignment="left">
+            <div class="line"></div>
+
+            <div class="media-options">
+                <a href="#" class="field facebook">
+                    <i class='bx bxl-facebook facebook-icon'></i>
+                    <span>Login with Facebook</span>
+                </a>
+
+                <!-- Google Sign-In Button -->
+                <div id="g_id_onload"
+                    data-client_id="320906098691-17sbvs8jnf5eu09ibk8j1ma4vjslauh1.apps.googleusercontent.com"
+                    data-context="signin"
+                    data-ux_mode="popup"
+                    data-login_uri="/auth_receiver/"
+                    data-auto_prompt="false">
+                </div>
+                <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline"
+                    data-text="signin_with" data-size="large" data-logo_alignment="left"></div>
             </div>
         </div>
-        {% endif %}
-    </div>
 
+        <!-- Signup Form -->
+        <div class="form signup">
+            <div class="form-content">
+                <header>Signup</header>
+                <form action="#">
+                    <div class="field input-field">
+                        <input type="email" placeholder="Email" class="input">
+                    </div>
+
+                    <div class="field input-field">
+                        <input type="password" placeholder="Create password" class="password">
+                    </div>
+
+                    <div class="field input-field">
+                        <input type="password" placeholder="Confirm password" class="password">
+                        <i class='bx bx-hide eye-icon'></i>
+                    </div>
+
+                    <div class="field button-field">
+                        <button>Signup</button>
+                    </div>
+                </form>
+
+                <div class="form-link">
+                    <span>Already have an account? <a href="#" class="link login-link">Login</a></span>
+                </div>
+            </div>
+
+            <div class="line"></div>
+
+            <div class="media-options">
+                <a href="#" class="field facebook">
+                    <i class='bx bxl-facebook facebook-icon'></i>
+                    <span>Login with Facebook</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function handleSignInError(error) {
+            console.error("Sign-In Error:", error.message || error);
+        }
+
+        window.onload = function() {
+            try {
+                google.accounts.id.initialize({
+                    client_id: "320906098691-17sbvs8jnf5eu09ibk8j1ma4vjslauh1.apps.googleusercontent.com",
+                    callback: (response) => {
+                        // Handle successful response
+                        console.log("Google Sign-In Response:", response);
+                        fetch('/auth_receiver/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: `credential=${response.credential}`
+                        }).then(response => {
+                            if (!response.ok) {
+                                throw new Error("Failed to authenticate");
+                            }
+                            window.location.href = '/';
+                        }).catch(handleSignInError);
+                    }
+                });
+
+                google.accounts.id.renderButton(
+                    document.querySelector(".g_id_signin"),
+                    { theme: "outline", size: "large" }
+                );
+
+                google.accounts.id.prompt();
+            } catch (error) {
+                handleSignInError(error);
+            }
+        };
+    </script>
+
+    <script src="{% static 'js/userlogin/script.js'%}"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </body>
 
 </html>
-{% endblock content %}
