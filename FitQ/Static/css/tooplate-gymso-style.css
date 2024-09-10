@@ -32,7 +32,8 @@ https://www.tooplate.com/view/2119-gymso-fitness
 
   :root {
     --primary-color:        #f13a11;
-    background-color:#4070f4;
+    background-color:bg-gradient-to-r from-slate-300 to-slate-500;
+    
     /* background-image: linear-gradient(to right top, #051937, #004d7a, #008793, #00bf72, #a8eb12); */
 
     --primary-color:        #1611b2;
