@@ -7,17 +7,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
-        Apex Admin
+        User Dashboard
     </title>
     <link rel="shortcut icon" href="/images/logo-mb.png" type="image/png">
     <!-- GOOGLE FONT -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+        rel="stylesheet">
     <!-- BOXICONS -->
     <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
     <!-- APP CSS -->
     <link rel="stylesheet" href="{% static 'css/userdashboard/app.css'%}">
     <link rel="stylesheet" href="{% static 'css/userdashboard/grid.css'%}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body>
@@ -37,55 +42,30 @@
                     anh tuat
                 </div>
             </div>
-            <button class="btn btn-outline">
-                <i class='bx bx-log-out bx-flip-horizontal'></i>
-            </button>
+
         </div>
         <!-- SIDEBAR MENU -->
         <ul class="sidebar-menu">
             <li>
                 <a href="#" class="active">
                     <i class='bx bx-home'></i>
-                    <span>dashboard</span>
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <i class='bx bx-shopping-bag'></i>
-                    <span>sales</span>
+                    <span>Home</span>
                 </a>
             </li>
             <li>
                 <a href="#">
                     <i class='bx bx-chart'></i>
-                    <span>analytic</span>
+                    <span>analytics</span>
                 </a>
             </li>
             <li class="sidebar-submenu">
                 <a href="#" class="sidebar-menu-dropdown">
                     <i class='bx bx-user-circle'></i>
-                    <span>account</span>
-                    <div class="dropdown-icon"></div>
+                    <span>Edit Profile</span>
+                    <!-- <div class="dropdown-icon"></div> -->
                 </a>
-                <ul class="sidebar-menu sidebar-menu-dropdown-content">
-                    <li>
-                        <a href="#">
-                            edit profile
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            account settings
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            billing
-                        </a>
-                    </li>
-                </ul>
             </li>
-            <li class="sidebar-submenu">
+            <!-- <li class="sidebar-submenu">
                 <a href="#" class="sidebar-menu-dropdown">
                     <i class='bx bx-category'></i>
                     <span>project</span>
@@ -103,8 +83,8 @@
                         </a>
                     </li>
                 </ul>
-            </li>
-            <li class="sidebar-submenu">
+            </li> -->
+            <!-- <li class="sidebar-submenu">
                 <a href="#" class="sidebar-menu-dropdown">
                     <i class='bx bx-category'></i>
                     <span>e-commerce</span>
@@ -127,11 +107,24 @@
                         </a>
                     </li>
                 </ul>
+            </li> -->
+            <li>
+                <a href="#">
+                    <i style="margin-left: 2px;" class="fa-duotone fa-solid fa-user-doctor fa-xl"
+                        style="--fa-primary-color: #0f0f0f; --fa-secondary-color: #000000;"></i>
+                    <span><b>Doctor Consulting</b></span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa-solid fa-bars-progress fa-xl" style="color: #4b494a;"></i>
+                    <span><b>Monitoring</b></span>
+                </a>
             </li>
             <li>
                 <a href="#">
                     <i class='bx bx-mail-send'></i>
-                    <span>mail</span>
+                    <span>Feedback</span>
                 </a>
             </li>
             <li>
@@ -172,9 +165,14 @@
             <div class="mobile-toggle" id="mobile-toggle">
                 <i class='bx bx-menu-alt-right'></i>
             </div>
-            <div class="main-title">
-                dashboard
+            <div class="main-title" style="display: flex; justify-content: space-between; align-items: center;">
+                <p id="greeting" style="margin: 0; text-align: center;"></p>
+                <button class="btn btn-outline" style="margin-left: auto; margin-left: 980px;" >
+                    <i class='bx bx-log-out bx-flip-horizontal'></i>
+                </button>
             </div>
+
+
         </div>
         <div class="main-content">
             <div class="row">
@@ -183,11 +181,11 @@
                         <!-- COUNTER -->
                         <div class="counter">
                             <div class="counter-title">
-                                total order
+                                Globally Fit People
                             </div>
                             <div class="counter-info">
                                 <div class="counter-count">
-                                    6578
+                                    30.5 %
                                 </div>
                                 <i class='bx bx-shopping-bag'></i>
                             </div>
@@ -315,14 +313,15 @@
                     <!-- TOP PRODUCT -->
                 </div>
                 <div class="col-4 col-md-6 col-sm-12">
-                    <!-- CATEGORY CHART -->
+                    <!-- HEALTH METRICS CHART -->
                     <div class="box f-height">
                         <div class="box-body">
-                            <div id="category-chart"></div>
+                            <div id="health-metrics-chart"></div>
                         </div>
                     </div>
-                    <!-- END CATEGORY CHART -->
+                    <!-- END HEALTH METRICS CHART -->
                 </div>
+
                 <div class="col-5 col-md-12 col-sm-12">
                     <!-- CUSTOMERS CHART -->
                     <div class="box f-height">
@@ -481,7 +480,27 @@
     <!-- APEX CHART -->
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <!-- APP JS -->
-    <script src="{% static 'js/userdashboard/app.css'%}"></script>
+    <script src="{% static 'js/userdashboard/app.js'%}"></script>
+    <script>
+        function getGreeting() {
+            const now = new Date();
+            const hours = now.getHours();
+            let greeting = "";
+
+            if (hours < 12) {
+                greeting = "Good Morning Mate 😃";
+            } else if (hours >= 12 && hours < 17) {
+                greeting = "Good Afternoon Mate 😃";
+            } else {
+                greeting = "Good Evening Mate 😃";
+            }
+
+            document.getElementById("greeting").innerText = greeting;
+        }
+
+        // Call the function when the page loads
+        window.onload = getGreeting;
+    </script>
 
 </body>
 
