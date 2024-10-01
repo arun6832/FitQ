@@ -21,14 +21,16 @@
         <!-- Login Form -->
         <div class="form login">
             <div class="form-content">
-                <header>Login</header>
-                <form action="#">
+                {{msg}}
+                <header>Member Login❤️‍🩹</header>
+                <form method="post" action="{% url 'sign_in' %}">
+                    {% csrf_token %}
                     <div class="field input-field">
-                        <input type="email" placeholder="Email" class="input">
+                        <input type="text" name="email" placeholder="Email" class="input" required>
                     </div>
 
                     <div class="field input-field">
-                        <input type="password" placeholder="Password" class="password">
+                        <input type="password" name="password2" placeholder="Password" class="password" required>
                         <i class='bx bx-hide eye-icon'></i>
                     </div>
 
@@ -37,7 +39,7 @@
                     </div>
 
                     <div class="field button-field">
-                        <button>Login</button>
+                        <button type="submit" name="login">Login</button>
                     </div>
                 </form>
 
@@ -49,10 +51,10 @@
             <div class="line"></div>
 
             <div class="media-options">
-                <a href="#" class="field facebook">
+                <!-- <a href="#" class="field facebook">
                     <i class='bx bxl-facebook facebook-icon'></i>
                     <span>Login with Facebook</span>
-                </a>
+                </a> -->
 
                 <!-- Google Sign-In Button -->
                 <div id="g_id_onload"
@@ -71,22 +73,24 @@
         <div class="form signup">
             <div class="form-content">
                 <header>Signup</header>
-                <form action="#">
+                <form method="post" action="{% url 'create' %}">
+                    {% csrf_token %}
                     <div class="field input-field">
-                        <input type="email" placeholder="Email" class="input">
+                        <input type="text" name="email" placeholder="Email" class="input" required>
                     </div>
 
                     <div class="field input-field">
-                        <input type="password" placeholder="Create password" class="password">
+                        <input type="password" name="password1" placeholder="Create password" class="password" required>
+                        <i class='bx bx-hide eye-icon'></i>
                     </div>
 
                     <div class="field input-field">
-                        <input type="password" placeholder="Confirm password" class="password">
+                        <input type="password" name="password2" placeholder="Confirm password" class="password" required>
                         <i class='bx bx-hide eye-icon'></i>
                     </div>
 
                     <div class="field button-field">
-                        <button>Signup</button>
+                        <button type="submit" name="signup">Signup</button>
                     </div>
                 </form>
 
@@ -95,13 +99,13 @@
                 </div>
             </div>
 
-            <div class="line"></div>
+            <!-- <div class="line"></div> -->
 
             <div class="media-options">
-                <a href="#" class="field facebook">
+                <!-- <a href="#" class="field facebook">
                     <i class='bx bxl-facebook facebook-icon'></i>
                     <span>Login with Facebook</span>
-                </a>
+                </a> -->
             </div>
         </div>
     </section>
