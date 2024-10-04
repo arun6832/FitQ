@@ -30,7 +30,7 @@ let customer_options = {
     series: [{
         name: "Store Customers",
         data: [40, 70, 20, 90, 36, 80, 30, 91, 60]
-    },{
+    }, {
         name: "Online Customers",
         data: [20, 30, 10, 20, 16, 40, 20, 51, 10]
     }],
@@ -65,7 +65,7 @@ setDarkChart = (dark) => {
 
     customer_chart.updateOptions(theme)
     category_chart.updateOptions(theme)
-} 
+}
 
 // DARK MODE TOGGLE
 let darkmode_toggle = document.querySelector('#darkmode-toggle')
