@@ -101,3 +101,6 @@ def monitoring(request):
     # Remove user data from session
     logout(request)
     return redirect('daily')
+
+def usercalender(request):
+    return render(request,'userdashboard/usercalender.html')

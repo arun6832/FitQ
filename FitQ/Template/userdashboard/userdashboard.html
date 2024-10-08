@@ -134,7 +134,7 @@
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="{% url 'usercalender' %}">
                     <i class='bx bx-calendar'></i>
                     <span>calendar</span>
                 </a>
@@ -167,8 +167,9 @@
             </div>
             <div class="main-title" style="display: flex; justify-content: space-between; align-items: center;">
                 <p id="greeting" style="margin: 0; text-align: center;"></p>
-                <button class="btn btn-outline" style="margin-left: auto; margin-left: 980px;">
-                    <i class='bx bx-log-out bx-flip-horizontal'></i>
+                <button class="btn btn-outline" style="margin-left: auto; margin-left: 980px;"><a
+                        href="{% url 'index' %}">
+                        <i class='bx bx-log-out bx-flip-horizontal'></i></a>
                 </button>
             </div>
 
