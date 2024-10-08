@@ -7,7 +7,10 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('sign_in/', views.sign_in, name='sign_in'),
     path('auth_receiver/', views.auth_receiver, name='auth_receiver'),
-    path('sign-out/', views.sign_out, name='sign_out'),
+    path('sign_out/', views.sign_out, name='sign_out'),
+    path('mytrack/', views.mytrack, name='mytrack'),
     path('create_ac/',views.create_ac,name='create'),
-    path('userdashboard/',views.userdashboard,name='userdashboard')
+    path('userdashboard/',views.userdashboard,name='userdashboard'),
+    path('daily/',views.daily,name='daily'),
+    path('monitoring/',views.monitoring,name='monitoring'),
 ]
