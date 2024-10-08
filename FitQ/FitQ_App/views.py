@@ -79,3 +79,6 @@ def sign_out(request):
     if 'user_data' in request.session:
         del request.session['user_data']
     return redirect('sign_in')
+
+def userdashboard(request):
+    return render(request, 'userdashboard.html')
