@@ -47,22 +47,36 @@ https://www.tooplate.com/view/2119-gymso-fitness
 
                     <li class="nav-item">
                         <a href="#feature" class="nav-link smoothScroll">Our Motive</a>
-                    </li>
+                    </li>  
 
                     <li class="nav-item">
                         <a href="#about" class="nav-link smoothScroll">How It Works</a>
                     </li>
-
+                    {% if request.user.is_authenticated %}
+                    <li class="nav-item">
+                        <a href="mytrack" class="nav-link smoothScroll">My Track</a>
+                    </li>
+                    {% else %}
                     <li class="nav-item">
                         <a href="#class" class="nav-link smoothScroll">Reviews</a>
                     </li>
+                    {% endif  %}
 
                     <li class="nav-item">
                         <a href="#contact" class="nav-link smoothScroll">Contact</a>
                     </li>
+        
+                    {% if request.user.is_authenticated %}
                     <li class="nav-item">
-                        <a href="sign_in" class="nav-link smoothScroll">Sign Up</a>
+                        <a href="sign_out" class="nav-link smoothScroll">SignOut</a>
                     </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a href="sign_in" class="nav-link smoothScroll">SignUp/SignIn</a>
+                    </li>
+                    {% endif  %}
+                   
+
                 </ul>
 
                 <ul class="social-icon ml-lg-3">
@@ -517,6 +531,7 @@ https://www.tooplate.com/view/2119-gymso-fitness
 
                         <button type="submit" class="form-control" id="submit-button" name="submit">Submit
                             Button</button>
+                        
 
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="signup-agree">
@@ -532,6 +547,8 @@ https://www.tooplate.com/view/2119-gymso-fitness
             </div>
         </div>
     </div>
+
+    
 
     <!-- SCRIPTS -->
     <script src="{% static 'js/jquery.min.js'%}"></script>
