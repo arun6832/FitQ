@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wellness Tracker</title>
+    <link rel="stylesheet" href="{% static 'css/userdashboard/dailystyles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Wellness Tracker</h1>
+
+        <!-- Success Message -->
+        <div id="successMessage" class="hidden">
+            <h2>Details Saved Successfully!</h2>
+            <p>Come back on Day 2 to fill out your details.</p>
+        </div>
+
+        <form id="wellnessForm">
+            <div class="day-container">
+                <label for="sleepDuration">Sleep Duration (hours):</label>
+                <input type="number" id="sleepDuration" name="sleep_duration_hours" required min="1" max="24" step="0.1" placeholder="1.0 - 24.0 hours">
+
+                <label for="workoutDuration">Workout Duration:</label>
+                <select id="workoutDuration" name="workout_duration" required>
+                    <option value="">Select</option>
+                    <option value="15 minutes">15 minutes</option>
+                    <option value="45 minutes">45 minutes</option>
+                    <option value="More than 45 minutes">More than 45 minutes</option>
+                    <option value="No workout">No workout</option>
+                </select>
+
+                <label for="problemsDuringDay">Problems During Day:</label>
+                <select id="problemsDuringDay" name="problems_during_day" required>
+                    <option value="">Select</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+
+                <label for="waterIntake">Water Intake (liters):</label>
+                <input type="number" id="waterIntake" name="water_intake_liters" required min="0" step="0.1" placeholder="e.g., 2.5 L">
+
+                <label for="screenTime">Screen Time (hours):</label>
+                <input type="number" id="screenTime" name="screen_time" required min="0" step="0.1" placeholder="e.g., 4.0 hours">
+
+                <label for="foodOnTime">Food On Time:</label>
+                <select id="foodOnTime" name="food_on_time" required>
+                    <option value="">Select</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+
+                <label for="typeOfFood">Type of Food:</label>
+                <select id="typeOfFood" name="type_of_food" required>
+                    <option value="">Select</option>
+                    <option value="Healthy">Healthy</option>
+                    <option value="Junk">Junk</option>
+                </select>
+
+                <label for="smokingHabit">Smoking Habit:</label>
+                <select id="smokingHabit" name="smoking_habit" required>
+                    <option value="">Select</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+
+                <label for="alcoholConsumption">Alcohol Consumption:</label>
+                <select id="alcoholConsumption" name="alcohol_consumption" required>
+                    <option value="">Select</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+
+                <button type="button" id="submitButton">Submit Today's Responses</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="{% static 'js/userdashboard/dailyscript.js' %}"></script>
+</body>
+</html>

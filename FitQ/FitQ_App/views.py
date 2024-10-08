@@ -4,7 +4,8 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from google.oauth2 import id_token
 from google.auth.transport import requests
-from django.contrib.auth import authenticate
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate,login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 
@@ -22,8 +23,10 @@ def sign_in(request):
         if user is not None:
 
             if user.is_superuser:
+                login(request,user)
                 return redirect('index')
             elif user.is_active == 1:
+                login(request,user)
                 return redirect('index')
             else:
                 msg = "You are not autherized for this login"
@@ -55,8 +58,10 @@ def create_ac(request):
 
             msg = "user created successfully ,please login to continue!"
             return render(request, 'sign_in.html', {'msg': msg})
+        
     
     return render(request, 'sign_in.html')
+    
 
 @csrf_exempt
 def auth_receiver(request):
@@ -76,9 +81,23 @@ def auth_receiver(request):
 
 def sign_out(request):
     # Remove user data from session
-    if 'user_data' in request.session:
-        del request.session['user_data']
-    return redirect('sign_in')
+    logout(request)
+    return redirect('index')
+
+@login_required(login_url='sign_in')
+
+def mytrack(request):
+    # Remove user data from session
+    logout(request)
+    return redirect('userdashboard')
 
 def userdashboard(request):
-    return render(request, 'userdashboard.html')
+    return render(request, 'userdashboard/userdashboard.html')
+
+def daily(request):
+    return render(request, 'userdashboard/daily.html')
+
+def monitoring(request):
+    # Remove user data from session
+    logout(request)
+    return redirect('daily')
