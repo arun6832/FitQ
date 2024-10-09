@@ -15,13 +15,14 @@ document.querySelectorAll('.sidebar-submenu').forEach(e => {
 })
 
 let category_options = {
-    series: [44, 55, 41, 17],
-    labels: ['Cloths', 'Devices', 'Bags', 'Watches'],
+    series: [60, 25, 10, 5], // Adjusted percentage data representing different fitness categories
+    labels: ['Regular Exercise', 'Occasional Exercise', 'Sedentary', 'Athletes'], // Adjusted labels for fitness categories
     chart: {
         type: 'donut',
     },
-    colors: ['#6ab04c', '#2980b9', '#f39c12', '#d35400']
+    colors: ['#6ab04c', '#2980b9', '#f39c12', '#d35400'] // Colors remain the same
 }
+
 
 let category_chart = new ApexCharts(document.querySelector("#category-chart"), category_options)
 category_chart.render()

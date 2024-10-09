@@ -25,5 +25,40 @@ class MyUser(AbstractBaseUser):
 
     objects = MyUserManager()
 
-    def __str__(self):
-        return self.email
+    
+class WellnessTable(models.Model):
+    DAY_CHOICES = [
+        (1, "Day 1"),
+        (2, "Day 2"),
+        (3, "Day 3"),
+        (4, "Day 4"),
+        (5, "Day 5"),
+        (6, "Day 6"),
+        (7, "Day 7"),
+    ]
+
+    day = models.CharField(max_length=10) # Added default value
+
+    # Other fields...
+    sleep_duration_hours = models.DecimalField(max_digits=4, decimal_places=1)
+    workout_duration = models.CharField(max_length=50, choices=[
+        ("15 minutes", "15 minutes"),
+        ("45 minutes", "45 minutes"),
+        ("More than 45 minutes", "More than 45 minutes"),
+        ("No workout", "No workout")
+    ])
+    problems_during_day = models.CharField(max_length=3, choices=[("Yes", "Yes"), ("No", "No")])
+    water_intake_liters = models.DecimalField(max_digits=4, decimal_places=1)
+    screen_time = models.DecimalField(max_digits=4, decimal_places=1)
+    food_on_time = models.CharField(max_length=3, choices=[("Yes", "Yes"), ("No", "No")])
+    type_of_food = models.CharField(max_length=10, choices=[("Healthy", "Healthy"), ("Junk", "Junk")])
+    smoking_habit = models.CharField(max_length=3, choices=[("Yes", "Yes"), ("No", "No")])
+    alcohol_consumption = models.CharField(max_length=3, choices=[("Yes", "Yes"), ("No", "No")])
+    date = models.DateField(auto_now_add=True)
+
+    def _str_(self):
+        return f"Wellness Entry for Day {self.day} on {self.date}"
+    
+
+    def _str_(self):
+        return self.email 

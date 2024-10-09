@@ -1,0 +1,397 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        User Dashboard
+    </title>
+    <link rel="shortcut icon" href="/images/logo-mb.png" type="image/png">
+    <!-- GOOGLE FONT -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+        rel="stylesheet">
+    <!-- BOXICONS -->
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+    <!-- APP CSS -->
+    <link rel="stylesheet" href="{% static 'css/userdashboard/app.css'%}">
+    <link rel="stylesheet" href="{% static 'css/userdashboard/grid.css'%}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<style>
+    /* Import Google font - Poppins */
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+        display: flex;
+        align-items: center;
+        padding: 0 10px;
+        justify-content: center;
+        min-height: 100vh;
+        background: #0125db;
+    }
+
+    .wrapper {
+        width: 450px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    .wrapper header {
+        display: flex;
+        align-items: center;
+        padding: 25px 30px 10px;
+        justify-content: space-between;
+    }
+
+    header .icons {
+        display: flex;
+    }
+
+    header .icons span {
+        height: 38px;
+        width: 38px;
+        margin: 0 1px;
+        cursor: pointer;
+        color: #878787;
+        text-align: center;
+        line-height: 38px;
+        font-size: 1.9rem;
+        user-select: none;
+        border-radius: 50%;
+    }
+
+    .icons span:last-child {
+        margin-right: -10px;
+    }
+
+    header .icons span:hover {
+        background: #f2f2f2;
+    }
+
+    header .current-date {
+        font-size: 1.45rem;
+        font-weight: 500;
+    }
+
+    .calendar {
+        padding: 20px;
+    }
+
+    .calendar ul {
+        display: flex;
+        flex-wrap: wrap;
+        list-style: none;
+        text-align: center;
+    }
+
+    .calendar .days {
+        margin-bottom: 20px;
+    }
+
+    .calendar li {
+        color: #333;
+        width: calc(100% / 7);
+        font-size: 1.07rem;
+    }
+
+    .calendar .weeks li {
+        font-weight: 500;
+        cursor: default;
+    }
+
+    .calendar .days li {
+        z-index: 1;
+        cursor: pointer;
+        position: relative;
+        margin-top: 30px;
+    }
+
+    .days li.inactive {
+        color: #aaa;
+    }
+
+    .days li.active {
+        color: #fff;
+    }
+
+    .days li::before {
+        position: absolute;
+        content: "";
+        left: 50%;
+        top: 50%;
+        height: 40px;
+        width: 40px;
+        z-index: -1;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .days li.active::before {
+        background: #004bfa;
+    }
+
+    .days li:not(.active):hover::before {
+        background: #f2f2f2;
+    }
+</style>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="{% static 'images/userdashboard/logo-lg.png'%}" alt="Comapny logo">
+            <div class="sidebar-close" id="sidebar-close">
+                <i class='bx bx-left-arrow-alt'></i>
+            </div>
+        </div>
+        <div class="sidebar-user">
+            <div class="sidebar-user-info">
+                <img src="{% static 'images/userdashboard/user-image.jpg'%}" alt="User picture" class="profile-image">
+                <div class="sidebar-user-name">
+                    Nandhana
+                </div>
+            </div>
+
+        </div>
+        <!-- SIDEBAR MENU -->
+        <ul class="sidebar-menu">
+            <li>
+                <a href="{% url 'userdashboard' %}">
+                    <i class='bx bx-home'></i>
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class='bx bx-chart'></i>
+                    <span>analytics</span>
+                </a>
+            </li>
+            <li class="sidebar-submenu">
+                <a href="#" class="sidebar-menu-dropdown">
+                    <i class='bx bx-user-circle'></i>
+                    <span>Edit Profile</span>
+                    <!-- <div class="dropdown-icon"></div> -->
+                </a>
+            </li>
+            <!-- <li class="sidebar-submenu">
+                <a href="#" class="sidebar-menu-dropdown">
+                    <i class='bx bx-category'></i>
+                    <span>project</span>
+                    <div class="dropdown-icon"></div>
+                </a>
+                <ul class="sidebar-menu sidebar-menu-dropdown-content">
+                    <li>
+                        <a href="#">
+                            list
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            add project
+                        </a>
+                    </li>
+                </ul>
+            </li> -->
+            <!-- <li class="sidebar-submenu">
+                <a href="#" class="sidebar-menu-dropdown">
+                    <i class='bx bx-category'></i>
+                    <span>e-commerce</span>
+                    <div class="dropdown-icon"></div>
+                </a>
+                <ul class="sidebar-menu sidebar-menu-dropdown-content">
+                    <li>
+                        <a href="#">
+                            list product
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            add product
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            orders
+                        </a>
+                    </li>
+                </ul>
+            </li> -->
+            <li>
+                <a href="#">
+                    <i style="margin-left: 2px;" class="fa-duotone fa-solid fa-user-doctor fa-xl"
+                        style="--fa-primary-color: #0f0f0f; --fa-secondary-color: #000000;"></i>
+                    <span><b>Doctor Consulting</b></span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'daily' %}">
+                    <i class="fa-solid fa-bars-progress fa-xl" style="color: #4b494a;"></i>
+                    <span><b>Monitoring</b></span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class='bx bx-mail-send'></i>
+                    <span>Feedback</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class='bx bx-chat'></i>
+                    <span>chat</span>
+                </a>
+            </li>
+            <li>
+                <a href="#"  class="active">
+                    <i class='bx bx-calendar'></i>
+                    <span>calendar</span>
+                </a>
+            </li>
+            <li class="sidebar-submenu">
+                <a href="#" class="sidebar-menu-dropdown">
+                    <i class='bx bx-cog'></i>
+                    <span>settings</span>
+                    <div class="dropdown-icon"></div>
+                </a>
+                <ul class="sidebar-menu sidebar-menu-dropdown-content">
+                    <li>
+                        <a href="#" class="darkmode-toggle" id="darkmode-toggle">
+                            darkmode
+                            <span class="darkmode-switch"></span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <!-- END SIDEBAR MENU -->
+    </div>
+    <!-- END SIDEBAR -->
+
+    <!-- MAIN CONTENT -->
+    <!--  -->
+    <div class="wrapper" style="margin-left: 270px;">
+        <header>
+            <p class="current-date"></p>
+            <div class="icons">
+                <span id="prev" class="material-symbols-rounded"><</span>
+                <span id="next" class="material-symbols-rounded">></span>
+            </div>
+        </header>
+        <div class="calendar">
+            <ul class="weeks">
+                <li>Sun</li>
+                <li>Mon</li>
+                <li>Tue</li>
+                <li>Wed</li>
+                <li>Thu</li>
+                <li>Fri</li>
+                <li>Sat</li>
+            </ul>
+            <ul class="days"></ul>
+        </div>
+    </div>
+    <!-- END MAIN CONTENT -->
+
+    <div class="overlay"></div>
+
+    <!-- SCRIPT -->
+    <!-- APEX CHART -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <!-- APP JS -->
+    <script src="{% static 'js/userdashboard/app.js'%}"></script>
+    <script>
+        function getGreeting() {
+            const now = new Date();
+            const hours = now.getHours();
+            let greeting = "";
+
+            if (hours < 12) {
+                greeting = "Good Morning Mate 😃";
+            } else if (hours >= 12 && hours < 17) {
+                greeting = "Good Afternoon Mate 😃";
+            } else {
+                greeting = "Good Evening Mate 😃";
+            }
+
+            document.getElementById("greeting").innerText = greeting;
+        }
+
+        // Call the function when the page loads
+        window.onload = getGreeting;
+        const daysTag = document.querySelector(".days"),
+            currentDate = document.querySelector(".current-date"),
+            prevNextIcon = document.querySelectorAll(".icons span");
+
+        // getting new date, current year and month
+        let date = new Date(),
+            currYear = date.getFullYear(),
+            currMonth = date.getMonth();
+
+        // storing full name of all months in array
+        const months = ["January", "February", "March", "April", "May", "June", "July",
+            "August", "September", "October", "November", "December"];
+
+        const renderCalendar = () => {
+            let firstDayofMonth = new Date(currYear, currMonth, 1).getDay(), // getting first day of month
+                lastDateofMonth = new Date(currYear, currMonth + 1, 0).getDate(), // getting last date of month
+                lastDayofMonth = new Date(currYear, currMonth, lastDateofMonth).getDay(), // getting last day of month
+                lastDateofLastMonth = new Date(currYear, currMonth, 0).getDate(); // getting last date of previous month
+            let liTag = "";
+
+            for (let i = firstDayofMonth; i > 0; i--) { // creating li of previous month last days
+                liTag += `<li class="inactive">${lastDateofLastMonth - i + 1}</li>`;
+            }
+
+            for (let i = 1; i <= lastDateofMonth; i++) { // creating li of all days of current month
+                // adding active class to li if the current day, month, and year matched
+                let isToday = i === date.getDate() && currMonth === new Date().getMonth()
+                    && currYear === new Date().getFullYear() ? "active" : "";
+                liTag += `<li class="${isToday}">${i}</li>`;
+            }
+
+            for (let i = lastDayofMonth; i < 6; i++) { // creating li of next month first days
+                liTag += `<li class="inactive">${i - lastDayofMonth + 1}</li>`
+            }
+            currentDate.innerText = `${months[currMonth]} ${currYear}`; // passing current mon and yr as currentDate text
+            daysTag.innerHTML = liTag;
+        }
+        renderCalendar();
+
+        prevNextIcon.forEach(icon => { // getting prev and next icons
+            icon.addEventListener("click", () => { // adding click event on both icons
+                // if clicked icon is previous icon then decrement current month by 1 else increment it by 1
+                currMonth = icon.id === "prev" ? currMonth - 1 : currMonth + 1;
+
+                if (currMonth < 0 || currMonth > 11) { // if current month is less than 0 or greater than 11
+                    // creating a new date of current year & month and pass it as date value
+                    date = new Date(currYear, currMonth, new Date().getDate());
+                    currYear = date.getFullYear(); // updating current year with new date year
+                    currMonth = date.getMonth(); // updating current month with new date month
+                } else {
+                    date = new Date(); // pass the current date as date value
+                }
+                renderCalendar(); // calling renderCalendar function
+            });
+        });
+    </script>
+
+</body>
+
+</html>

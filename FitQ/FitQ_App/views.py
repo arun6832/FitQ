@@ -7,6 +7,8 @@ from google.auth.transport import requests
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate,login, logout
 from django.contrib.auth.models import User
+from .models import WellnessTable
+from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password
 
 def index(request):
@@ -97,7 +99,53 @@ def userdashboard(request):
 def daily(request):
     return render(request, 'userdashboard/daily.html')
 
+def usercalender(request):
+    return render(request,'userdashboard/usercalender.html')
+
+from .models import WellnessTable  # Import the WellnessTable model
+
 def monitoring(request):
-    # Remove user data from session
-    logout(request)
-    return redirect('daily')
+    context = {}
+
+    if request.method == 'POST':
+        # Extract data from the form
+        sleep_duration = request.POST.get('sleep_duration_hours')
+        workout_duration = request.POST.get('workout_duration')
+        problems_during_day = request.POST.get('problems_during_day')
+        water_intake = request.POST.get('water_intake_liters')
+        screen_time = request.POST.get('screen_time')
+        food_on_time = request.POST.get('food_on_time')
+        type_of_food = request.POST.get('type_of_food')
+        smoking_habit = request.POST.get('smoking_habit')
+        alcohol_consumption = request.POST.get('alcohol_consumption')
+
+        # Create a new WellnessTable object and save it to the database
+        wellness_entry = WellnessTable(
+            day="1",  # Set the appropriate day (you might want to capture this from the form)
+            sleep_duration_hours=sleep_duration,
+            workout_duration=workout_duration,
+            problems_during_day=problems_during_day,
+            water_intake_liters=water_intake,
+            screen_time=screen_time,
+            food_on_time=food_on_time,
+            type_of_food=type_of_food,
+            smoking_habit=smoking_habit,
+            alcohol_consumption=alcohol_consumption
+        )
+        wellness_entry.save()  # Save the entry to the database
+
+        # Add the data to context for display in the success message
+        context['sleep_duration'] = sleep_duration
+        context['workout_duration'] = workout_duration
+        context['problems_during_day'] = problems_during_day
+        context['water_intake'] = water_intake
+        context['screen_time'] = screen_time
+        context['food_on_time'] = food_on_time
+        context['type_of_food'] = type_of_food
+        context['smoking_habit'] = smoking_habit
+        context['alcohol_consumption'] = alcohol_consumption
+        
+        # Optionally, add a success flag to show the success message
+        context['success'] = True
+
+    return render(request, 'userdashboard/daily.html', context)

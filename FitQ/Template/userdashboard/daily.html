@@ -1,26 +1,46 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wellness Tracker</title>
     <link rel="stylesheet" href="{% static 'css/userdashboard/dailystyles.css' %}">
 </head>
+
 <body>
     <div class="container">
         <h1>Wellness Tracker</h1>
 
         <!-- Success Message -->
-        <div id="successMessage" class="hidden">
+        <div id="successMessage" class="{% if success %}visible{% else %}hidden{% endif %}">
             <h2>Details Saved Successfully!</h2>
             <p>Come back on Day 2 to fill out your details.</p>
         </div>
 
-        <form id="wellnessForm">
+        <!-- Display Submitted Data -->
+        {% if success %}
+        <h2>Your Submitted Details:</h2>
+        <ul>
+            <li><strong>Sleep Duration:</strong> {{ sleep_duration }} hours</li>
+            <li><strong>Workout Duration:</strong> {{ workout_duration }}</li>
+            <li><strong>Problems During Day:</strong> {{ problems_during_day }}</li>
+            <li><strong>Water Intake:</strong> {{ water_intake }} liters</li>
+            <li><strong>Screen Time:</strong> {{ screen_time }} hours</li>
+            <li><strong>Food On Time:</strong> {{ food_on_time }}</li>
+            <li><strong>Type of Food:</strong> {{ type_of_food }}</li>
+            <li><strong>Smoking Habit:</strong> {{ smoking_habit }}</li>
+            <li><strong>Alcohol Consumption:</strong> {{ alcohol_consumption }}</li>
+        </ul>
+        {% else %}
+        <!-- Form to Submit Wellness Data -->
+        <form id="wellnessForm" method="POST" action="{% url 'monitoring' %}">
+            {% csrf_token %}
             <div class="day-container">
                 <label for="sleepDuration">Sleep Duration (hours):</label>
-                <input type="number" id="sleepDuration" name="sleep_duration_hours" required min="1" max="24" step="0.1" placeholder="1.0 - 24.0 hours">
+                <input type="number" id="sleepDuration" name="sleep_duration_hours" required min="1" max="24" step="0.1"
+                    placeholder="1.0 - 24.0 hours">
 
                 <label for="workoutDuration">Workout Duration:</label>
                 <select id="workoutDuration" name="workout_duration" required>
@@ -39,10 +59,12 @@
                 </select>
 
                 <label for="waterIntake">Water Intake (liters):</label>
-                <input type="number" id="waterIntake" name="water_intake_liters" required min="0" step="0.1" placeholder="e.g., 2.5 L">
+                <input type="number" id="waterIntake" name="water_intake_liters" required min="0" step="0.1"
+                    placeholder="e.g., 2.5 L">
 
                 <label for="screenTime">Screen Time (hours):</label>
-                <input type="number" id="screenTime" name="screen_time" required min="0" step="0.1" placeholder="e.g., 4.0 hours">
+                <input type="number" id="screenTime" name="screen_time" required min="0" step="0.1"
+                    placeholder="e.g., 4.0 hours">
 
                 <label for="foodOnTime">Food On Time:</label>
                 <select id="foodOnTime" name="food_on_time" required>
@@ -72,11 +94,14 @@
                     <option value="No">No</option>
                 </select>
 
-                <button type="button" id="submitButton">Submit Today's Responses</button>
+                <button type="submit">Submit Today's Responses</button>
             </div>
         </form>
+        {% endif %}
+
     </div>
 
     <script src="{% static 'js/userdashboard/dailyscript.js' %}"></script>
 </body>
+
 </html>
