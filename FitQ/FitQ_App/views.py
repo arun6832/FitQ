@@ -100,7 +100,7 @@ def daily(request):
     return render(request, 'userdashboard/daily.html')
 
 def usercalender(request):
-    return render(request,'userdashboard/usercalender')
+    return render(request,'userdashboard/usercalender.html')
 
 from .models import WellnessTable  # Import the WellnessTable model
 
