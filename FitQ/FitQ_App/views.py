@@ -76,25 +76,43 @@ def auth_receiver(request):
     except ValueError:
         return HttpResponse(status=403)
 
-    # Save user data in session
+  
     request.session['user_data'] = user_data
 
     return redirect('sign_in')
 
 def sign_out(request):
-    # Remove user data from session
+
     logout(request)
     return redirect('index')
 
 @login_required(login_url='sign_in')
 
 def mytrack(request):
-    # Remove user data from session
+
     logout(request)
     return redirect('userdashboard')
 
+import requests
+from django.shortcuts import render
+
+def fetch_news():
+    api_key = '7451378a56084e16b51e75e922fcef47'  
+    url = f'https://newsapi.org/v2/top-headlines?country=us&apiKey={api_key}'
+    
+    response = requests.get(url)
+    data = response.json()
+    
+    if response.status_code == 200:
+        articles = data.get('articles', [])
+        return articles
+    else:
+        return []
+
 def userdashboard(request):
-    return render(request, 'userdashboard/userdashboard.html')
+    articles = fetch_news()  
+    return render(request, 'userdashboard/userdashboard.html', {'articles': articles})
+
 
 def daily(request):
     return render(request, 'userdashboard/daily.html')
@@ -102,7 +120,7 @@ def daily(request):
 def usercalender(request):
     return render(request,'userdashboard/usercalender.html')
 
-from .models import WellnessTable  # Import the WellnessTable model
+from .models import WellnessTable 
 
 def monitoring(request):
     context = {}
@@ -119,9 +137,9 @@ def monitoring(request):
         smoking_habit = request.POST.get('smoking_habit')
         alcohol_consumption = request.POST.get('alcohol_consumption')
 
-        # Create a new WellnessTable object and save it to the database
+       
         wellness_entry = WellnessTable(
-            day="1",  # Set the appropriate day (you might want to capture this from the form)
+            day="1",  
             sleep_duration_hours=sleep_duration,
             workout_duration=workout_duration,
             problems_during_day=problems_during_day,
@@ -132,9 +150,7 @@ def monitoring(request):
             smoking_habit=smoking_habit,
             alcohol_consumption=alcohol_consumption
         )
-        wellness_entry.save()  # Save the entry to the database
-
-        # Add the data to context for display in the success message
+        wellness_entry.save()
         context['sleep_duration'] = sleep_duration
         context['workout_duration'] = workout_duration
         context['problems_during_day'] = problems_during_day
@@ -145,7 +161,6 @@ def monitoring(request):
         context['smoking_habit'] = smoking_habit
         context['alcohol_consumption'] = alcohol_consumption
         
-        # Optionally, add a success flag to show the success message
         context['success'] = True
 
     return render(request, 'userdashboard/daily.html', context)
