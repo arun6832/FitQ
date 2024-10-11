@@ -7,9 +7,12 @@ from google.auth.transport import requests
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate,login, logout
 from django.contrib.auth.models import User
-from .models import WellnessTable
+from .models import WellnessTable, Feedback
+from .forms import FeedbackForm
 from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password
+
+
 
 def index(request):
     return render(request, 'index.html')
@@ -102,8 +105,6 @@ def daily(request):
 def usercalender(request):
     return render(request,'userdashboard/usercalender.html')
 
-from .models import WellnessTable  # Import the WellnessTable model
-
 def monitoring(request):
     context = {}
 
@@ -149,3 +150,17 @@ def monitoring(request):
         context['success'] = True
 
     return render(request, 'userdashboard/daily.html', context)
+
+def feedback_success(request):
+    return render(request, 'userdashboard/feedback_success.html')
+
+def feedback(request):
+    if request.method == 'POST':
+        form = FeedbackForm(request.POST)
+        if form.is_valid():
+            form.save()  # Save the form data to the database
+            return redirect('feedback_success')  # Redirect to a success page
+    else:
+        form = FeedbackForm()  # Create an empty form instance
+    
+    return render(request, 'userdashboard/feedbackform.html', {'form': form})

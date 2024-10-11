@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitQ - Enhanced Feedback</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- AOS for Scroll Animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/userdashboard/feedbackstyles.css' %}">
+    <style>
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .submit-btn {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="feedback-section">
+        <div class="feedback-container" data-aos="fade-up">
+            <h1><i class="fas fa-comment-alt"></i> Share Your Thoughts</h1>
+            <p class="description">We'd love to hear from you! Let us know how we're doing.</p>
+            <!-- Display server-side error messages -->
+            {% if error %}
+            <p class="error-message">{{ error }}</p>
+            {% endif %}
+            <form id="feedbackForm" class="feedback-form" method="POST" action="{% url 'feedback' %}">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="name"><i class="fas fa-user"></i> Name</label>
+                    <input type="text" id="name" name="name" placeholder="Your Full Name" value="{{ name|default:'' }}" required>
+                    <span class="error-message">{{ errors.name }}</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="email" name="email" placeholder="you@example.com" value="{{ email|default:'' }}" required>
+                    <span class="error-message">{{ errors.email }}</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="message"><i class="fas fa-comments"></i> Your Feedback</label>
+                    <textarea id="message" name="message" rows="5" placeholder="Share your feedback..." required>{{ message|default:'' }}</textarea>
+                    <span class="error-message">{{ errors.message }}</span>
+                </div>
+
+                <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> Send Feedback</button>
+            </form>
+
+            <div id="responseMessage" class="response-message"></div>
+        </div>
+    </div>
+
+    <!-- AOS Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        AOS.init(); // Initialize the AOS animation
+    </script>
+    <!-- Custom JS -->
+    <script src="{% static 'js/userdashboard/feedbackjs.js' %}"></script>
+</body>
+
+</html>

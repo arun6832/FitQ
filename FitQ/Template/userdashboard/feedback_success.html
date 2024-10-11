@@ -1,0 +1,20 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Submitted</title>
+    <link rel="stylesheet" href="{% static 'css/userdashboard/feedbackstyles.css' %}">
+</head>
+
+<body>
+    <div class="success-message">
+        <h1>Thank You for Your Feedback!</h1>
+        <p>Your feedback has been successfully submitted. We appreciate your input.</p>
+        <a href="{% url 'feedback' %}">Back to Feedback Form</a>
+    </div>
+</body>
+
+</html>
