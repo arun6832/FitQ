@@ -14,6 +14,7 @@ urlpatterns = [
     path('daily/',views.daily,name='daily'),
     path('monitoring/',views.monitoring,name='monitoring'),
     path('usercalender/',views.usercalender,name='usercalender'),
+    path('user_details/',views.user_details,name='user_details'),
     path('feedbackform/',views.feedback,name='feedbackform'),
     path('feedback/', views.feedback, name='feedback'),
     path('feedback/success/', views.feedback_success, name='feedback_success'),

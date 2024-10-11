@@ -166,6 +166,8 @@ def monitoring(request):
 
     return render(request, 'userdashboard/daily.html', context)
 
+def user_details(request):
+    return render(request,'user_details.html')
 def feedback_success(request):
     return render(request, 'userdashboard/feedback_success.html')
 
