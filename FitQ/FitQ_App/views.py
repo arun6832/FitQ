@@ -149,3 +149,6 @@ def monitoring(request):
         context['success'] = True
 
     return render(request, 'userdashboard/daily.html', context)
+
+def user_details(request):
+    return render(request,'user_details.html')

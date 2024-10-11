@@ -14,4 +14,5 @@ urlpatterns = [
     path('daily/',views.daily,name='daily'),
     path('monitoring/',views.monitoring,name='monitoring'),
     path('usercalender/',views.usercalender,name='usercalender'),
+    path('user_details/',views.user_details,name='user_details'),
 ]
