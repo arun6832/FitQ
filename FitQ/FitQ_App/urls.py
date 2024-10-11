@@ -14,5 +14,11 @@ urlpatterns = [
     path('daily/',views.daily,name='daily'),
     path('monitoring/',views.monitoring,name='monitoring'),
     path('usercalender/',views.usercalender,name='usercalender'),
+<<<<<<< HEAD
     path('user_details/',views.user_details,name='user_details'),
+=======
+    path('feedbackform/',views.feedback,name='feedbackform'),
+    path('feedback/', views.feedback, name='feedback'),
+    path('feedback/success/', views.feedback_success, name='feedback_success'),
+>>>>>>> 54d78ded09ea0b099183813de6692aa0d0a9cd40
 ]
