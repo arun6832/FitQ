@@ -8,7 +8,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate,login, logout
 from django.contrib.auth.models import User
 from .models import WellnessTable, Feedback
-from .forms import FeedbackForm
 from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password
 
@@ -168,16 +167,15 @@ def monitoring(request):
 
 def user_details(request):
     return render(request,'user_details.html')
-def feedback_success(request):
-    return render(request, 'userdashboard/feedback_success.html')
 
-def feedback(request):
+def feedback_form(request):
     if request.method == 'POST':
-        form = FeedbackForm(request.POST)
-        if form.is_valid():
-            form.save()  # Save the form data to the database
-            return redirect('feedback_success')  # Redirect to a success page
-    else:
-        form = FeedbackForm()  # Create an empty form instance
-    
-    return render(request, 'userdashboard/feedbackform.html', {'form': form})
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        message = request.POST.get('message')
+        print(name)
+        feedbak = Feedback.objects.create(name = name, email = email, message = message)
+        feedbak.save()
+        return redirect(userdashboard)
+    return render(request, 'userdashboard/feedbackform.html')
+
