@@ -17,28 +17,6 @@ def index(request):
     return render(request, 'index.html')
 
 
-def sign_in(request):
-    if request.method == 'POST':
-        email = request.POST['email']
-        password2 = request.POST['password2']
-        print(email, password2)
-        user = authenticate(request, username=email, password=password2)
-        print(user)
-        if user is not None:
-
-            if user.is_superuser:
-                login(request,user)
-                return redirect('index')
-            elif user.is_active == 1:
-                login(request,user)
-                return redirect('index')
-            else:
-                msg = "You are not autherized for this login"
-                return render(request, 'sign_in.html', {'msg': msg})
-        else:
-            msg = "Invalid Credentials. Please try again!"
-            return render(request, 'sign_in.html', {'msg': msg})
-    return render(request, 'sign_in.html')
 
 
 def create_ac(request):
@@ -166,27 +144,71 @@ def monitoring(request):
 
     return render(request, 'userdashboard/daily.html', context)
 
+# Sign-in view
+def sign_in(request):
+    if request.method == 'POST':
+        email = request.POST['email']
+        password = request.POST['password2']
+        user = authenticate(request, username=email, password=password)
+        
+        if user is not None:
+            login(request, user)
+            return redirect('user_details')  # Redirect to user details after login
+        else:
+            msg = "Invalid Credentials. Please try again!"
+            return render(request, 'sign_in.html', {'msg': msg})
+    
+    return render(request, 'sign_in.html')
+
+# User details view (protected, requires login)
 @login_required
 def user_details(request):
-    
     if request.method == 'POST':
         # Extract data from the form
-        name = request.POST.get('username') #Username
+        username = request.POST.get('username')  # Ensure that this matches the name attribute in the HTML form
         gender = request.POST.get('gender')
-        date_of_birth = request.POST.get('dob')
+        date_of_birth = request.POST.get('dob')  # Format YYYY-MM-DD for DateField
         country = request.POST.get('country')
         employment_status = request.POST.get('employment')
         height = request.POST.get('height')
         weight = request.POST.get('weight')
-        usr = User.objects.get(username = name)
-        if usr is not None:
-            print("User : ", usr)
-        else:
+
+        # Debugging: Print form data to verify
+        print("Username:", username)
+        print("Gender:", gender)
+        print("Date of Birth:", date_of_birth)
+        print("Country:", country)
+        print("Employment Status:", employment_status)
+        print("Height:", height)
+        print("Weight:", weight)
+
+        # Get the user from the User model
+        try:
+            usr = User.objects.get(username=username)
+        except User.DoesNotExist:
             print("User not found")
-        userde=UserDetails.objects.create(user=usr,gender=gender,date_of_birth=date_of_birth,country=country,employment_status=employment_status,height=height,weight=weight, is_profile_complete = False)
-        userde.save()
-        # Redirect after saving
-        return redirect(userdashboard)  # Replace with the appropriate view name if necessary
+            return render(request, 'userdashboard/user_details.html', {'error': 'User not found'})
+
+        # Create and save the UserDetails object
+        user_detail, created = UserDetails.objects.get_or_create(
+            user=usr,
+            defaults={
+                'gender': gender,
+                'date_of_birth': date_of_birth,
+                'country': country,
+                'employment_status': employment_status,
+                'height': height,
+                'weight': weight,
+                'is_profile_complete': True
+            }
+        )
+        if created:
+            print("New user details added.")
+        else:
+            print("User details already exist.")
+
+        return redirect('user_dashboard')  # Redirect to some other page after successful entry
+
     return render(request, 'userdashboard/user_details.html')
 
 def feedback_form(request):
@@ -200,3 +222,64 @@ def feedback_form(request):
         return redirect(userdashboard)
     return render(request, 'userdashboard/feedbackform.html')
 
+def create(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+
+        # UserDetails fields
+        gender = request.POST.get('gender')
+        dob = request.POST.get('dob')
+        country = request.POST.get('country')
+        employment = request.POST.get('employment')
+        height = request.POST.get('height')
+        weight = request.POST.get('weight')
+
+        # Check if passwords match
+        if password1 != password2:
+            msg = "Passwords do not match!"
+            return render(request, 'sign_in.html', {'msg': msg})
+
+        # Check if user already exists
+        if User.objects.filter(username=username).exists():
+            msg = "Username already exists!"
+            return render(request, 'sign_in.html', {'msg': msg})
+
+        if User.objects.filter(email=email).exists():
+            msg = "Email already exists!"
+            return render(request, 'sign_in.html', {'msg': msg})
+
+        # Create the User object
+        user = User.objects.create(
+            username=username,
+            email=email,
+            first_name=first_name,
+            last_name=last_name,
+            password=make_password(password1)
+        )
+        user.save()
+
+        # Create UserDetails record
+        user_details = UserDetails.objects.create(
+            user=user,
+            gender=gender,
+            date_of_birth=dob,
+            country=country,
+            employment_status=employment,
+            height=height,
+            weight=weight,
+            is_profile_complete=False
+        )
+        user_details.save()
+
+        # Automatically log in the user after sign up
+        login(request, user)
+
+        # Redirect to dashboard after successful registration
+        return redirect('userdashboard')  # Change to your appropriate dashboard
+
+    return render(request, 'sign_in.html')

@@ -5,7 +5,6 @@ from FitQ_App import views  # Import your views here
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
-    path('sign_in/', views.sign_in, name='sign_in'),
     path('auth_receiver/', views.auth_receiver, name='auth_receiver'),
     path('sign_out/', views.sign_out, name='sign_out'),
     path('mytrack/', views.mytrack, name='mytrack'),
@@ -14,6 +13,8 @@ urlpatterns = [
     path('daily/',views.daily,name='daily'),
     path('monitoring/',views.monitoring,name='monitoring'),
     path('usercalender/',views.usercalender,name='usercalender'),
+     path('sign_in/', views.sign_in, name='sign_in'),
     path('user_details/', views.user_details, name='user_details'),
     path('feedback/', views.feedback_form, name='feedback'),
+    path('create/', views.create, name='create'),
 ]

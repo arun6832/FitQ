@@ -80,4 +80,4 @@ class UserDetails(models.Model):
     employment_status = models.CharField(max_length=50)
     height = models.FloatField()
     weight = models.FloatField()
-    is_profile_complete = models.BooleanField(default=False)  # This flag controls the redirection
+    is_profile_complete = models.BooleanField(default=False)
