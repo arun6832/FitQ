@@ -39,9 +39,10 @@
             <div class="sidebar-user-info">
                 <img src="{% static 'images/userdashboard/user-image.jpg' %}" alt="User picture" class="profile-image">
                 <div class="sidebar-user-name">
-                    Nandhana
+                    {{ request.user.username }} <!-- Use the logged-in user's username -->
                 </div>
             </div>
+
 
         </div>
         <!-- SIDEBAR MENU -->
@@ -186,8 +187,9 @@
                             </div>
                             <div class="counter-info">
                                 <div class="counter-count">
-                                    30.5 %
+                                    {{ user_details.height }} <!-- Dynamically display the height -->
                                 </div>
+                                <span> cm</span> <!-- Display cm separately -->
                                 <i class="fa-solid fa-person"></i>
                             </div>
                         </div>

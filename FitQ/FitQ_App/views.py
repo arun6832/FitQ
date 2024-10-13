@@ -148,17 +148,31 @@ def monitoring(request):
 def sign_in(request):
     if request.method == 'POST':
         email = request.POST['email']
-        password = request.POST['password2']
-        user = authenticate(request, username=email, password=password)
-        
-        if user is not None:
-            login(request, user)
-            return redirect('user_details')  # Redirect to user details after login
-        else:
+        password2 = request.POST['password2']
+
+        print(f"Trying to authenticate user: {email}")
+        print(f"Password provided: {password2}")
+
+        # Fetch the user based on the email
+        try:
+            user = User.objects.get(email=email)
+            user = authenticate(request, username=user.username, password=password2)
+        except User.DoesNotExist:
+            print("User does not exist.")
             msg = "Invalid Credentials. Please try again!"
             return render(request, 'sign_in.html', {'msg': msg})
-    
+
+        if user is not None:
+            login(request, user)
+            return redirect('userdashboard')  # Redirect to the user dashboard page
+        else:
+            print("Authentication failed.")
+            msg = "Invalid Credentials. Please try again!"
+            return render(request, 'sign_in.html', {'msg': msg})
+
     return render(request, 'sign_in.html')
+
+
 
 # User details view (protected, requires login)
 @login_required
