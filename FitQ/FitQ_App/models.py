@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 class MyUserManager(BaseUserManager):
@@ -70,3 +71,13 @@ class Feedback(models.Model):
 
     def __str__(self):
         return self.name
+    
+class UserDetails(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    gender = models.CharField(max_length=10)
+    date_of_birth = models.DateField()
+    country = models.CharField(max_length=50)
+    employment_status = models.CharField(max_length=50)
+    height = models.FloatField()
+    weight = models.FloatField()
+    is_profile_complete = models.BooleanField(default=False)  # This flag controls the redirection

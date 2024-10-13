@@ -7,7 +7,7 @@ from google.auth.transport import requests
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate,login, logout
 from django.contrib.auth.models import User
-from .models import WellnessTable, Feedback
+from .models import WellnessTable, Feedback, UserDetails
 from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password
 
@@ -43,10 +43,12 @@ def sign_in(request):
 
 def create_ac(request):
     if request.method == 'POST':
-        username = request.POST.get('email')
+        username = request.POST.get('username')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
         password2 = request.POST.get('password2')
         password1 = request.POST.get('password1')
-        
         if User.objects.filter(username=username):
             msg = 'This username already exists please login to continue!'
             return render(request, 'sign_in.html', {'msg': msg})
@@ -56,12 +58,11 @@ def create_ac(request):
             return render(request, 'sign_in.html', {'msg': msg})
         
         else:
-            user = User.objects.create_user(username=username)
+            user = User.objects.create_user(username=username, first_name = first_name, last_name = last_name, email=email)
             user.set_password(password1)
             user.save()
-
-            msg = "user created successfully ,please login to continue!"
-            return render(request, 'sign_in.html', {'msg': msg})
+            msg = "user created successfully"
+            return render(request, 'userdashboard/user_details.html', {'msg': msg})
         
     
     return render(request, 'sign_in.html')
@@ -165,8 +166,28 @@ def monitoring(request):
 
     return render(request, 'userdashboard/daily.html', context)
 
+@login_required
 def user_details(request):
-    return render(request,'user_details.html')
+    
+    if request.method == 'POST':
+        # Extract data from the form
+        name = request.POST.get('username') #Username
+        gender = request.POST.get('gender')
+        date_of_birth = request.POST.get('dob')
+        country = request.POST.get('country')
+        employment_status = request.POST.get('employment')
+        height = request.POST.get('height')
+        weight = request.POST.get('weight')
+        usr = User.objects.get(username = name)
+        if usr is not None:
+            print("User : ", usr)
+        else:
+            print("User not found")
+        userde=UserDetails.objects.create(user=usr,gender=gender,date_of_birth=date_of_birth,country=country,employment_status=employment_status,height=height,weight=weight, is_profile_complete = False)
+        userde.save()
+        # Redirect after saving
+        return redirect(userdashboard)  # Replace with the appropriate view name if necessary
+    return render(request, 'userdashboard/user_details.html')
 
 def feedback_form(request):
     if request.method == 'POST':

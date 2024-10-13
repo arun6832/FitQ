@@ -75,9 +75,18 @@
                 <form method="post" action="{% url 'create' %}">
                     {% csrf_token %}
                     <div class="field input-field">
+                        <input type="text" name="username" placeholder="Username" class="input" required>
+                    </div>
+                    <div class="field input-field">
                         <input type="text" name="email" placeholder="Email" class="input" required>
                     </div>
-
+                    <div class="field input-field">
+                        <input type="text" name="first_name" placeholder="First Name" class="input" required>
+                    </div>
+                    <div class="field input-field">
+                        <input type="text" name="last_name" placeholder="Last Name" class="input" required>
+                    </div>
+                    
                     <div class="field input-field">
                         <input type="password" name="password1" placeholder="Create password" class="password" required>
                         <i class='bx bx-hide eye-icon'></i>
