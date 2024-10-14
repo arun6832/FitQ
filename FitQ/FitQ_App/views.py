@@ -166,10 +166,8 @@ def monitoring(request):
 
     return render(request, 'userdashboard/daily.html', context)
 
-<<<<<<< HEAD
 def user_details(request):
     return render(request,'user_details.html')
-=======
 def feedback_success(request):
     return render(request, 'userdashboard/feedback_success.html')
 
@@ -183,4 +181,3 @@ def feedback(request):
         form = FeedbackForm()  # Create an empty form instance
     
     return render(request, 'userdashboard/feedbackform.html', {'form': form})
->>>>>>> 54d78ded09ea0b099183813de6692aa0d0a9cd40
