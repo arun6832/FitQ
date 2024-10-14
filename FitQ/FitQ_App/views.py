@@ -90,11 +90,6 @@ def fetch_news():
     else:
         return []
 
-def userdashboard(request):
-    articles = fetch_news()  
-    return render(request, 'userdashboard/userdashboard.html', {'articles': articles})
-
-
 def daily(request):
     return render(request, 'userdashboard/daily.html')
 
@@ -297,3 +292,23 @@ def create(request):
         return redirect('userdashboard')  # Change to your appropriate dashboard
 
     return render(request, 'sign_in.html')
+
+@login_required
+def userdashboard(request):
+    try:
+        user_details = UserDetails.objects.get(user=request.user)
+        if user_details.height > 0:
+            height_in_meters = user_details.height / 100
+            bmi = round(user_details.weight / (height_in_meters ** 2), 2)
+        else:
+            bmi = None
+    except UserDetails.DoesNotExist:
+        user_details = None
+        bmi = None
+
+    context = {
+        'user_details': user_details,
+        'bmi': bmi,
+    }
+
+    return render(request, 'userdashboard/userdashboard.html', context)
