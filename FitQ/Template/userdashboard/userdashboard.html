@@ -23,6 +23,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> -->
+
 </head>
 
 <body>
@@ -37,11 +39,21 @@
         </div>
         <div class="sidebar-user">
             <div class="sidebar-user-info">
-                <img src="{% static 'images/userdashboard/user-image.jpg' %}" alt="User picture" class="profile-image">
+                {% if user_details.gender == "Male" %}
+                <img src="https://randomuser.me/api/portraits/men/10.jpg" alt="Male Avatar" class="profile-image">
+                {% elif user_details.gender == "Female" %}
+                <img src="https://randomuser.me/api/portraits/women/10.jpg" alt="Female Avatar" class="profile-image">
+                {% else %}
+                <img src="https://randomuser.me/api/portraits/lego/2.jpg" alt="Default Avatar" class="profile-image">
+                {% endif %}
                 <div class="sidebar-user-name">
-                    Nandhana
+                    {{ request.user.username }} <!-- Use the logged-in user's username -->
                 </div>
             </div>
+
+
+
+
 
         </div>
         <!-- SIDEBAR MENU -->
@@ -59,12 +71,12 @@
                 </a>
             </li>
             <li class="sidebar-submenu">
-                <a href="#" class="sidebar-menu-dropdown">
+                <a href="{% url 'edit_profile' %}">
                     <i class='bx bx-user-circle'></i>
                     <span>Edit Profile</span>
-                    <!-- <div class="dropdown-icon"></div> -->
                 </a>
             </li>
+
             <!-- <li class="sidebar-submenu">
                 <a href="#" class="sidebar-menu-dropdown">
                     <i class='bx bx-category'></i>
@@ -186,8 +198,9 @@
                             </div>
                             <div class="counter-info">
                                 <div class="counter-count">
-                                    30.5 %
+                                    {{ user_details.height }} <!-- Dynamically display the height -->
                                 </div>
+                                <span> cm</span> <!-- Display cm separately -->
                                 <i class="fa-solid fa-person"></i>
                             </div>
                         </div>
@@ -203,7 +216,7 @@
                             </div>
                             <div class="counter-info">
                                 <div class="counter-count">
-                                    30.5%
+                                    {{ user_details.weight }} kg <!-- Dynamically display the weight -->
                                 </div>
                                 <i class="fa-solid fa-weight-scale"></i>
                             </div>
@@ -216,17 +229,24 @@
                         <!-- COUNTER -->
                         <div class="counter">
                             <div class="counter-title">
-                                total profit
+                                BMI
                             </div>
                             <div class="counter-info">
                                 <div class="counter-count">
-                                    $9,780
+                                    {% if bmi %}
+                                    {{ bmi }} <!-- Dynamically display the calculated BMI -->
+                                    {% else %}
+                                    N/A
+                                    {% endif %}
                                 </div>
-                                <i class='bx bx-line-chart'></i>
+                                <i class="fa-solid fa-calculator"></i>
                             </div>
                         </div>
                         <!-- END COUNTER -->
                     </div>
+
+
+
                 </div>
                 <div class="col-3 col-md-6 col-sm-12">
                     <div class="box box-hover">
@@ -255,7 +275,7 @@
                 </div>
 
 
-                <div class="container-fluid" style="margin-left: 150px;">
+                <div class="container-fluid" style="margin-left: 220px;">
                     <div class="row">
                         <!-- FITNESS AND WELLNESS VIDEO -->
                         <div class="col-lg-6 col-md-6 col-sm-12">
@@ -307,132 +327,32 @@
                                         <th>Days</th>
                                         <th>Date</th>
                                         <th>Status</th>
-                                        <th>Order status</th>
-
 
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {% for day in days_data %}
                                     <tr>
-                                        <td>Day 1</td>
-                                        <td>2021-05-09</td>
+                                        <td>{{ day.day }}</td>
+                                        <td>{{ day.date }}</td>
                                         <td>
-                                            <span class="order-status order-ready">
-                                                Ready
-                                            </span>
+                                            {% if day.day == 'Day 1' %}
+                                            <span
+                                                style="background-color: green; color: white; padding: 5px; border-radius: 5px;">Completed</span>
+                                            {% else %}
+                                            <span
+                                                style="background-color: red; color: white; padding: 5px; border-radius: 5px;">Incomplete</span>
+                                            {% endif %}
                                         </td>
-                                        <td>
-                                            <div class="payment-status payment-pending">
-                                                <div class="dot"></div>
-                                                <span>Pending</span>
-                                            </div>
-                                        </td>
+
+
+
 
                                     </tr>
-                                    <tr>
-                                        <td>Day 2</td>
-
-                                        <td>2021-05-09</td>
-                                        <td>
-                                            <span class="order-status order-shipped">
-                                                Shipped
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <div class="payment-status payment-pending">
-                                                <div class="dot"></div>
-                                                <span>Pending</span>
-                                            </div>
-                                        </td>
-
-                                    </tr>
-                                    <tr>
-                                        <td>Day 3</td>
-
-                                        <td>2021-05-09</td>
-                                        <td>
-                                            <span class="order-status order-shipped">
-                                                Shipped
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <div class="payment-status payment-paid">
-                                                <div class="dot"></div>
-                                                <span>Paid</span>
-                                            </div>
-                                        </td>
-
-                                    </tr>
-                                    <tr>
-                                        <td>Day 4</td>
-
-                                        <td>2021-05-09</td>
-                                        <td>
-                                            <span class="order-status order-shipped">
-                                                Shipped
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <div class="payment-status payment-paid">
-                                                <div class="dot"></div>
-                                                <span>Paid</span>
-                                            </div>
-                                        </td>
-
-                                    </tr>
-                                    <tr>
-                                        <td>Day 5</td>
-
-                                        <td>2021-05-09</td>
-                                        <td>
-                                            <span class="order-status order-shipped">
-                                                Shipped
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <div class="payment-status payment-paid">
-                                                <div class="dot"></div>
-                                                <span>Paid</span>
-                                            </div>
-                                        </td>
-
-                                    </tr>
-                                    <tr>
-                                        <td>Day 6</td>
-
-                                        <td>2021-05-09</td>
-                                        <td>
-                                            <span class="order-status order-shipped">
-                                                Shipped
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <div class="payment-status payment-paid">
-                                                <div class="dot"></div>
-                                                <span>Paid</span>
-                                            </div>
-                                        </td>
-
-                                    </tr>
-                                    <tr>
-                                        <td>Day 7</td>
-
-                                        <td>2021-05-09</td>
-                                        <td>
-                                            <span class="order-status order-shipped">
-                                                Shipped
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <div class="payment-status payment-paid">
-                                                <div class="dot"></div>
-                                                <span>Paid</span>
-                                            </div>
-                                        </td>
-
-                                    </tr>
+                                    {% endfor %}
                                 </tbody>
                             </table>
+
                         </div>
                     </div>
                     <!-- END ORDERS TABLE -->
