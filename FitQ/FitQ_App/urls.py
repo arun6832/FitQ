@@ -18,4 +18,6 @@ urlpatterns = [
     path('feedback/', feedback_form, name='feedback'),
     path('create/', create, name='create'),
     path('edit-profile/', edit_profile, name='edit_profile'),
+    path('chatbot/', chatbot, name='chatbot'),
+    path('chatbot/response/', chatbot_response, name='chatbot_response'),  # URL for chatbot response
 ]

@@ -11,6 +11,8 @@ from .models import WellnessTable, Feedback, UserDetails
 from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password
 from django.utils import timezone
+from gtts import gTTS
+from django.conf import settings
 
 
 def index(request):
@@ -363,3 +365,44 @@ def edit_profile(request):
         'user_details': user_details,
     }
     return render(request, 'userdashboard/edit_profile.html', context)
+
+
+
+chatbot_responses = {
+    "hello": "Hi! How can I assist you today?",
+    "how are you?": "I'm just a bot, but thanks for asking!",
+    "what is your name?": "I am your fitness assistant bot.",
+    "help": "I can assist you with your fitness questions.",
+    "what should I eat after a workout?": "It's great to consume a mix of protein and carbs after a workout. A protein shake or a meal with chicken and rice works well!",
+    "how much water should I drink?": "It's generally recommended to drink about 2 liters (or 8 cups) of water per day, but it varies based on your activity level.",
+    "what is a good workout routine for beginners?": "A good beginner routine includes a mix of cardio and strength training. Start with 30 minutes of walking or jogging, and incorporate bodyweight exercises like push-ups and squats.",
+    "how do I lose weight fast?": "The best way to lose weight is through a combination of a healthy diet and regular exercise. Aim for a calorie deficit and stay active!",
+    "what is a healthy breakfast?": "A healthy breakfast could include oatmeal with fruits, yogurt with granola, or eggs with spinach.",
+    "how often should I exercise?": "Aim for at least 150 minutes of moderate aerobic activity or 75 minutes of vigorous activity each week, plus strength training on two or more days.",
+    "what are some good exercises for building muscle?": "Exercises like bench presses, squats, deadlifts, and pull-ups are great for building muscle.",
+    "how can I stay motivated to exercise?": "Set specific goals, find a workout buddy, and track your progress to stay motivated!",
+    "what are some benefits of yoga?": "Yoga can improve flexibility, reduce stress, and enhance overall well-being.",
+    "how do I improve my flexibility?": "Incorporate stretching into your routine and try yoga to improve flexibility.",
+    "what is the best time to exercise?": "The best time to exercise is when it fits into your schedule! Consistency is key.",
+    "how do I prevent injuries while exercising?": "Warm up before workouts, use proper form, and listen to your body to prevent injuries.",
+    "what are some tips for healthy snacking?": "Choose snacks like fruits, nuts, yogurt, or veggies with hummus for healthy options.",
+    "how can I get abs?": "Focus on a combination of diet, cardio, and targeted exercises like planks and crunches.",
+    "is it okay to eat late at night?": "It's okay to eat late, but try to keep it light and healthy to avoid sleep disruption.",
+    "how do I deal with cravings?": "Stay hydrated, eat regular meals, and opt for healthy alternatives when cravings hit.",
+    "what supplements should I take?": "It's best to consult with a healthcare provider to determine what supplements are right for you based on your diet and goals.",
+    "how can I track my progress?": "Keep a workout journal, use fitness apps, or take progress photos to track your improvements."
+}
+
+
+@login_required
+def chatbot(request):
+    return render(request, 'userdashboard/chatbot.html')
+
+@login_required
+def chatbot_response(request):
+    user_message = request.GET.get('message', '').lower()
+    response = get_chatbot_response(user_message)
+    return JsonResponse({'response': response})
+
+def get_chatbot_response(user_message):
+    return chatbot_responses.get(user_message, "Sorry, I didn't understand that.")
