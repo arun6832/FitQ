@@ -38,9 +38,8 @@ class WellnessTable(models.Model):
         (7, "Day 7"),
     ]
 
-    day = models.CharField(max_length=10) # Added default value
-
-    # Other fields...
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Associate with User model
+    day = models.CharField(max_length=10, choices=DAY_CHOICES)  # Use DAY_CHOICES
     sleep_duration_hours = models.DecimalField(max_digits=4, decimal_places=1)
     workout_duration = models.CharField(max_length=50, choices=[
         ("15 minutes", "15 minutes"),
@@ -57,12 +56,13 @@ class WellnessTable(models.Model):
     alcohol_consumption = models.CharField(max_length=3, choices=[("Yes", "Yes"), ("No", "No")])
     date = models.DateField(auto_now_add=True)
 
-    def _str_(self):
+    def __str__(self):
+        # Returns a readable string representation
         return f"Wellness Entry for Day {self.day} on {self.date}"
-    
-
-    def _str_(self):
-        return self.email 
+ 
+    def __str__(self):
+        # You mentioned `email`, assuming it's related to the user, using `user.email`
+        return self.user.email if self.user else "No user"
     
 class Feedback(models.Model):
     name = models.CharField(max_length=255)
@@ -78,6 +78,6 @@ class UserDetails(models.Model):
     date_of_birth = models.DateField()
     country = models.CharField(max_length=50)
     employment_status = models.CharField(max_length=50)
-    height = models.FloatField()
+    height = models.FloatField()    
     weight = models.FloatField()
     is_profile_complete = models.BooleanField(default=False)

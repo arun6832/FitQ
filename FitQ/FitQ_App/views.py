@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 from .models import WellnessTable, Feedback, UserDetails
 from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password
-
+from django.utils import timezone
 
 
 def index(request):
@@ -296,19 +296,70 @@ def create(request):
 @login_required
 def userdashboard(request):
     try:
+        # Fetch user details from UserDetails model
         user_details = UserDetails.objects.get(user=request.user)
+        
+        # Calculate BMI
         if user_details.height > 0:
             height_in_meters = user_details.height / 100
             bmi = round(user_details.weight / (height_in_meters ** 2), 2)
         else:
             bmi = None
+
+        # Get the user's registration date
+        start_date = request.user.date_joined
+        
+        # Generate date data for the next 7 days
+        days_data = []
+        for i in range(7):  # For 7 days
+            day_date = start_date + timezone.timedelta(days=i)
+            day_number = i + 1
+            
+            # Check if the user has filled out the daily form for that day
+            try:
+                daily_form = WellnessTable.objects.filter(user=request.user, day=day_number)
+                filled_status = 'Filled'
+                payment_status = 'Paid'  # You can adjust this based on your logic
+            except WellnessTable.DoesNotExist:
+                filled_status = 'Not Filled'
+                payment_status = 'Pending' if i == 0 else 'Paid'  # Example logic for payment status
+
+            days_data.append({
+                'day': f'Day {day_number}',
+                'date': day_date.date(),  # Get just the date part
+                'status': filled_status,  # Status based on form submission
+                'payment_status': payment_status  # Payment status
+            })
+
     except UserDetails.DoesNotExist:
         user_details = None
         bmi = None
+        days_data = []  # No data for days if UserDetails does not exist
 
     context = {
         'user_details': user_details,
         'bmi': bmi,
+        'days_data': days_data,
     }
 
     return render(request, 'userdashboard/userdashboard.html', context)
+
+@login_required
+def edit_profile(request):
+    user_details = UserDetails.objects.get(user=request.user)
+
+    if request.method == 'POST':
+        height = request.POST.get('height')
+        weight = request.POST.get('weight')
+
+        # Update user details
+        user_details.height = height
+        user_details.weight = weight
+        user_details.save()
+
+        return redirect('userdashboard')  # Redirect after saving
+    # Render the edit profile page
+    context = {
+        'user_details': user_details,
+    }
+    return render(request, 'userdashboard/edit_profile.html', context)

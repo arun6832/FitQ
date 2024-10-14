@@ -1,12 +1,11 @@
 :root {
-    --body-bg: #fafafb;
+    --body-bg: #0295cb;
     --box-bg: #ffffff;
     --main-color: #0652dd;
     --text-color: #455560;
     --text-second-color: #72849ab3;
-    --border-color: #e9e9e9;
+    --border-color: #ffffff;
     --menu-item-active-bg: rgba(62, 121, 247, 0.1);
-
     --box-border-radius: 15px;
     --sidebar-size: 300px;
     --sidebar-logo-img-size: 45px;
@@ -487,4 +486,20 @@ table td {
         position: absolute;
         right: -15px;
     }
+}
+
+.custom-status {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.completed {
+    background-color: #28a745; /* Green */
+    color: white;
+}
+
+.incomplete {
+    background-color: #dc3545; /* Red */
+    color: white;
 }
