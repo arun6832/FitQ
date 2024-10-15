@@ -1,0 +1,350 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Chatbot</title>
+    <link rel="stylesheet" href="{% static 'css/userdashboard/app.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{% static 'css/userdashboard/grid.css' %}">
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="{% static 'images/logo/FitQ.png' %}" alt="Company logo">
+            <div class="sidebar-close" id="sidebar-close">
+                <i class='bx bx-left-arrow-alt'></i>
+            </div>
+        </div>
+        <div class="sidebar-user">
+            <div class="sidebar-user-info">
+                {% if user_details.gender == "Male" %}
+                <img src="https://randomuser.me/api/portraits/men/10.jpg" alt="Male Avatar" class="profile-image">
+                {% elif user_details.gender == "Female" %}
+                <img src="https://randomuser.me/api/portraits/women/10.jpg" alt="Female Avatar" class="profile-image">
+                {% else %}
+                <img src="https://randomuser.me/api/portraits/lego/2.jpg" alt="Default Avatar" class="profile-image">
+                {% endif %}
+                <div class="sidebar-user-name">
+                    {{ request.user.username }}
+                </div>
+            </div>
+        </div>
+        <ul class="sidebar-menu">
+            <li>
+                <a href="{% url 'userdashboard' %}" class="active">
+                    <i class='bx bx-home'></i>
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class='bx bx-chart'></i>
+                    <span>analytics</span>
+                </a>
+            </li>
+            <li class="sidebar-submenu">
+                <a href="{% url 'edit_profile' %}">
+                    <i class='bx bx-user-circle'></i>
+                    <span>Edit Profile</span>
+                </a>
+            </li>
+
+            <!-- <li class="sidebar-submenu">
+                <a href="#" class="sidebar-menu-dropdown">
+                    <i class='bx bx-category'></i>
+                    <span>project</span>
+                    <div class="dropdown-icon"></div>
+                </a>
+                <ul class="sidebar-menu sidebar-menu-dropdown-content">
+                    <li>
+                        <a href="#">
+                            list
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            add project
+                        </a>
+                    </li>
+                </ul>
+            </li> -->
+            <!-- <li class="sidebar-submenu">
+                <a href="#" class="sidebar-menu-dropdown">
+                    <i class='bx bx-category'></i>
+                    <span>e-commerce</span>
+                    <div class="dropdown-icon"></div>
+                </a>
+                <ul class="sidebar-menu sidebar-menu-dropdown-content">
+                    <li>
+                        <a href="#">
+                            list product
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            add product
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            orders
+                        </a>
+                    </li>
+                </ul>
+            </li> -->
+            <li>
+                <a href="#">
+                    <i style="margin-left: 2px;" class="fa-duotone fa-solid fa-user-doctor fa-xl"
+                        style="--fa-primary-color: #0f0f0f; --fa-secondary-color: #000000;"></i>
+                    <span><b>Doctor Consulting</b></span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'daily' %}">
+                    <i class="fa-solid fa-bars-progress fa-xl" style="color: #4b494a;"></i>
+                    <span><b>Monitoring</b></span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'feedback' %}">
+                    <i class='bx bx-mail-send'></i>
+                    <span>Feedback</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'chatbot' %}">
+                    <i class='bx bx-chat'></i>
+                    <span>Chatbot</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'usercalender' %}">
+                    <i class='bx bx-calendar'></i>
+                    <span>calendar</span>
+                </a>
+            </li>
+            <li class="sidebar-submenu">
+                <a href="#" class="sidebar-menu-dropdown">
+                    <i class='bx bx-cog'></i>
+                    <span>settings</span>
+                    <div class="dropdown-icon"></div>
+                </a>
+                <ul class="sidebar-menu sidebar-menu-dropdown-content">
+                    <li>
+                        <a href="#" class="darkmode-toggle" id="darkmode-toggle">
+                            darkmode
+                            <span class="darkmode-switch"></span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <h1>Fitness Chatbot</h1>
+        <div class="chat-container">
+            <div class="chat-box" id="chat-box">
+                <!-- Chat messages will appear here -->
+            </div>
+            <div class="controls">
+                <button id="start-record-btn">Start Recording</button>
+                <button id="stop-record-btn" disabled>Stop Recording</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let recognition;
+        const chatBox = document.getElementById('chat-box');
+        const startRecordBtn = document.getElementById('start-record-btn');
+        const stopRecordBtn = document.getElementById('stop-record-btn');
+
+        // Check if browser supports speech recognition
+        if ('webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+
+            recognition.onresult = function (event) {
+                const userMessage = event.results[0][0].transcript;
+                addMessageToChat('You', userMessage);
+                fetchChatbotResponse(userMessage);
+            };
+
+            recognition.onend = function () {
+                startRecordBtn.disabled = false;
+                stopRecordBtn.disabled = true;
+            };
+
+            startRecordBtn.onclick = function () {
+                recognition.start();
+                startRecordBtn.disabled = true;
+                stopRecordBtn.disabled = false;
+            };
+
+            stopRecordBtn.onclick = function () {
+                recognition.stop();
+            };
+        } else {
+            alert('Speech recognition is not supported in this browser.');
+        }
+
+        function fetchChatbotResponse(message) {
+            $.getJSON("{% url 'chatbot_response' %}", { message: message }, function (data) {
+                const response = data.response;
+                addMessageToChat('Bot', response);
+                readAloud(response);
+            });
+        }
+
+        function readAloud(text) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function addMessageToChat(sender, message) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('chat-message');
+            messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
+            chatBox.appendChild(messageElement);
+            chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom
+        }
+    </script>
+
+    <style>
+        body {
+            display: flex;
+            font-family: Arial, sans-serif;
+            /* Font for the page */
+        }
+
+        .sidebar {
+            width: 250px;
+            /* Set the width of the sidebar */
+            background-color: #f4f4f4;
+            /* Background color for the sidebar */
+            padding: 15px;
+            /* Padding around sidebar items */
+            height: 100vh;
+            /* Full height of the viewport */
+            position: fixed;
+            /* Fixed position */
+        }
+
+        .main-content {
+            margin-left: 250px;
+            /* Space for the sidebar */
+            padding: 20px;
+            /* Padding around main content */
+            width: calc(100% - 250px);
+            /* Adjust width considering sidebar */
+        }
+
+        .chat-container {
+            border: 1px solid #ddd;
+            /* Border for the chat container */
+            border-radius: 10px;
+            /* Rounded corners */
+            padding: 20px;
+            /* Padding inside the chat container */
+            max-width: 500px;
+            /* Maximum width for the chat container */
+            margin: 0 auto;
+            /* Center the chat container */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            /* Shadow for depth */
+            background-color: #fff;
+            /* Background color for chat */
+        }
+
+        .chat-box {
+            max-height: 350px;
+            /* Max height for the chat box */
+            overflow-y: auto;
+            /* Enable scrolling */
+            margin-bottom: 10px;
+            /* Space below chat box */
+        }
+
+        .chat-message {
+            margin: 5px 0;
+            /* Space between messages */
+            padding: 5px;
+            /* Padding inside messages */
+            border-radius: 4px;
+            /* Rounded corners for messages */
+            background-color: #f1f1f1;
+            /* Background color for messages */
+        }
+
+        .sidebar-menu {
+            list-style-type: none;
+            /* Remove bullets from list */
+            padding: 0;
+            /* Remove default padding */
+        }
+
+        .sidebar-menu li {
+            margin: 10px 0;
+            /* Space between items */
+        }
+
+        .sidebar-menu li a {
+            text-decoration: none;
+            /* Remove underline */
+            color: #333;
+            /* Text color */
+            display: flex;
+            /* Flexbox for icon and text alignment */
+            align-items: center;
+            /* Center vertically */
+        }
+
+        .sidebar-menu li a:hover {
+            color: #007bff;
+            /* Change color on hover */
+        }
+
+        .main-content h1 {
+            margin-bottom: 20px;
+            /* Space below the heading */
+        }
+
+        /* Additional styles for the buttons */
+        button {
+            padding: 10px 15px;
+            /* Padding for buttons */
+            background-color: #007bff;
+            /* Button background color */
+            color: white;
+            /* Button text color */
+            border: none;
+            /* Remove border */
+            border-radius: 4px;
+            /* Rounded corners */
+            cursor: pointer;
+            /* Pointer cursor on hover */
+            margin-right: 10px;
+            /* Space between buttons */
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            /* Darker shade on hover */
+        }
+    </style>
+</body>
+
+</html>
