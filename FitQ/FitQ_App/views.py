@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from .models import MyUser, WellnessTable, Feedback, UserDetails,Trainer,UserTrainerRelation
 from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password
+from django.contrib import messages 
 from django.utils import timezone
 from gtts import gTTS
 from django.conf import settings
@@ -101,11 +102,10 @@ def daily(request):
 def usercalender(request):
     return render(request,'userdashboard/usercalender.html')
 
+@login_required
 def monitoring(request):
-    context = {}
-
     if request.method == 'POST':
-        # Extract data from the form
+        # Extract form data
         sleep_duration = request.POST.get('sleep_duration_hours')
         workout_duration = request.POST.get('workout_duration')
         problems_during_day = request.POST.get('problems_during_day')
@@ -116,33 +116,57 @@ def monitoring(request):
         smoking_habit = request.POST.get('smoking_habit')
         alcohol_consumption = request.POST.get('alcohol_consumption')
 
-       
-        wellness_entry = WellnessTable(
-            day="1",  
-            sleep_duration_hours=sleep_duration,
-            workout_duration=workout_duration,
-            problems_during_day=problems_during_day,
-            water_intake_liters=water_intake,
-            screen_time=screen_time,
-            food_on_time=food_on_time,
-            type_of_food=type_of_food,
-            smoking_habit=smoking_habit,
-            alcohol_consumption=alcohol_consumption
-        )
-        wellness_entry.save()
-        context['sleep_duration'] = sleep_duration
-        context['workout_duration'] = workout_duration
-        context['problems_during_day'] = problems_during_day
-        context['water_intake'] = water_intake
-        context['screen_time'] = screen_time
-        context['food_on_time'] = food_on_time
-        context['type_of_food'] = type_of_food
-        context['smoking_habit'] = smoking_habit
-        context['alcohol_consumption'] = alcohol_consumption
-        
-        context['success'] = True
+        # Debugging: print all values
+        print("Form Data:", {
+            'user': request.user,
+            'day': "1",
+            'sleep_duration': sleep_duration,
+            'workout_duration': workout_duration,
+            'problems_during_day': problems_during_day,
+            'water_intake': water_intake,
+            'screen_time': screen_time,
+            'food_on_time': food_on_time,
+            'type_of_food': type_of_food,
+            'smoking_habit': smoking_habit,
+            'alcohol_consumption': alcohol_consumption
+        })
 
-    return render(request, 'userdashboard/daily.html', context)
+        try:
+            # Create and save a new wellness entry
+            wellness_entry = WellnessTable(
+                user=request.user,
+                day="1",
+                sleep_duration_hours=float(sleep_duration),  # Ensure conversion to float
+                workout_duration=workout_duration,
+                problems_during_day=problems_during_day,
+                water_intake_liters=float(water_intake),  # Ensure conversion to float
+                screen_time=float(screen_time),  # Ensure conversion to float
+                food_on_time=food_on_time,
+                type_of_food=type_of_food,
+                smoking_habit=smoking_habit,
+                alcohol_consumption=alcohol_consumption
+            )
+            wellness_entry.save()
+            messages.success(request, 'Details saved successfully!')
+            return render(request, 'userdashboard/daily.html', {
+                'success': True,
+                # Pass the submitted data back to the template
+                'sleep_duration': sleep_duration,
+                'workout_duration': workout_duration,
+                'problems_during_day': problems_during_day,
+                'water_intake': water_intake,
+                'screen_time': screen_time,
+                'food_on_time': food_on_time,
+                'type_of_food': type_of_food,
+                'smoking_habit': smoking_habit,
+                'alcohol_consumption': alcohol_consumption,
+            })
+        except Exception as e:
+            messages.error(request, 'An error occurred while saving your data: {}'.format(str(e)))
+            print("Error:", e)  # Print the error message for debugging
+            print("Error type:", type(e)._name_)  # Print the type of error
+
+    return render(request, 'userdashboard/daily.html', {'success': False})
 
 # Sign-in view
 def sign_in(request):
@@ -476,4 +500,4 @@ def select_trainer(request, trainer_id):
     # Create or update the user-trainer relationship
     relation, created = UserTrainerRelation.objects.get_or_create(user=request.user, trainer=trainer)
 
-    return redirect('userdashboard')  # Redirect to the user dashboard after selection
+    return redirect('userdashboard')  # Redirect to the user dashboard after selection
