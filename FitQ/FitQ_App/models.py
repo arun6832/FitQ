@@ -81,3 +81,4 @@ class UserDetails(models.Model):
     height = models.FloatField()    
     weight = models.FloatField()
     is_profile_complete = models.BooleanField(default=False)
+    
