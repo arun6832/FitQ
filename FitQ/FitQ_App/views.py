@@ -406,3 +406,7 @@ def chatbot_response(request):
 
 def get_chatbot_response(user_message):
     return chatbot_responses.get(user_message, "Sorry, I didn't understand that.")
+
+def trainer_consulting(request):
+    trainers = Trainer.objects.all()
+    return render(request, 'userdashboard/trainer_consulting.html', {'trainers': trainers})

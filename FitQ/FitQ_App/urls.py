@@ -20,4 +20,5 @@ urlpatterns = [
     path('edit-profile/', edit_profile, name='edit_profile'),
     path('chatbot/', chatbot, name='chatbot'),
     path('chatbot/response/', chatbot_response, name='chatbot_response'),  # URL for chatbot response
+    path('trainer-consulting/',trainer_consulting, name='trainer_consulting'),
 ]

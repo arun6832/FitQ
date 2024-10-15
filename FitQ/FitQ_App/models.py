@@ -16,16 +16,23 @@ class MyUserManager(BaseUserManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         return self.create_user(email, password, **extra_fields)
-
+    
 class MyUser(AbstractBaseUser):
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=128)
+    ROLE_CHOICES = (
+        ('user', 'User'),
+        ('trainer', 'Trainer'),
+    )
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='user')
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
     objects = MyUserManager()
 
+    def is_trainer(self):
+        return self.role == 'trainer'
     
 class WellnessTable(models.Model):
     DAY_CHOICES = [
@@ -38,8 +45,8 @@ class WellnessTable(models.Model):
         (7, "Day 7"),
     ]
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Associate with User model
-    day = models.CharField(max_length=10, choices=DAY_CHOICES)  # Use DAY_CHOICES
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  
+    day = models.CharField(max_length=10, choices=DAY_CHOICES) 
     sleep_duration_hours = models.DecimalField(max_digits=4, decimal_places=1)
     workout_duration = models.CharField(max_length=50, choices=[
         ("15 minutes", "15 minutes"),
@@ -81,3 +88,4 @@ class UserDetails(models.Model):
     height = models.FloatField()    
     weight = models.FloatField()
     is_profile_complete = models.BooleanField(default=False)
+    
