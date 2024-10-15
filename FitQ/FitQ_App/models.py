@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.hashers import make_password
+
 
 class MyUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -17,22 +19,24 @@ class MyUserManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', True)
         return self.create_user(email, password, **extra_fields)
     
+    def create_trainer(self, email, password=None):
+        if not email:
+            raise ValueError('Users must have an email address')
+        email = self.normalize_email(email)
+        user = self.model(email=email)
+        user.password = make_password(password)  # Hash the password
+        user.save(using=self._db)
+        return user
+    
 class MyUser(AbstractBaseUser):
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=128)
-    ROLE_CHOICES = (
-        ('user', 'User'),
-        ('trainer', 'Trainer'),
-    )
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='user')
+    is_trainer = models.BooleanField(default=False)  # Add this to differentiate user types
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
     objects = MyUserManager()
-
-    def is_trainer(self):
-        return self.role == 'trainer'
     
 class WellnessTable(models.Model):
     DAY_CHOICES = [
@@ -89,3 +93,19 @@ class UserDetails(models.Model):
     weight = models.FloatField()
     is_profile_complete = models.BooleanField(default=False)
     
+class Trainer(models.Model):
+    user = models.OneToOneField(MyUser, on_delete=models.CASCADE, related_name='trainer_profile')
+    specialization = models.CharField(max_length=100)
+    photo = models.ImageField(upload_to='trainers_photos/')
+    available_for_booking = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.user.email
+    
+
+class UserTrainerRelation(models.Model):
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name='assigned_trainers')
+    trainer = models.ForeignKey(Trainer, on_delete=models.CASCADE, related_name='assigned_users')
+
+    def __str__(self):
+        return f'{self.user.email} - {self.trainer.name}'

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trainer Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h2 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+        }
+        .button {
+            background-color: #4CAF50; /* Green */
+            color: white;
+            padding: 10px 15px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            margin: 4px 2px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Trainer Dashboard</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Trainer ID</th>
+                <th>Trainer Name</th>
+                <th>Trainer Photo</th>
+                <th>Specialization</th>
+                <th>Contact Option</th>
+                <th>Book Option</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for trainer in trainers %}
+                <tr>
+                    <td>{{ trainer.id }}</td>
+                    <td>{{ trainer.email }}</td> <!-- You may want to show a different name field -->
+                    <td><img src="{{ trainer.photo_url }}" alt="{{ trainer.email }}"></td>
+                    <td>{{ trainer.specialization }}</td>
+                    <td>
+                        <a href="mailto:{{ trainer.email }}" class="button">Contact</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'book_trainer' trainer.id %}" class="button">Book</a> <!-- Update URL name as needed -->
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
