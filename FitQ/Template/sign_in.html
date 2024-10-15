@@ -181,7 +181,7 @@
                                 'Content-Type': 'application/x-www-form-urlencoded',
                                 'X-CSRFToken': csrftoken,  // Pass CSRF token in headers
                             },
-                            body: `credential=${response.credential}`
+                            body: `credential=${encodeURIComponent(response.credential)}`  // Properly format the body
                         }).then(response => {
                             if (!response.ok) {
                                 throw new Error("Failed to authenticate");
@@ -191,11 +191,13 @@
                     }
                 });
 
+                // Render the Google Sign-In button
                 google.accounts.id.renderButton(
                     document.querySelector(".g_id_signin"),
                     { theme: "outline", size: "large" }
                 );
 
+                // Prompt the user to sign in
                 google.accounts.id.prompt();
             } catch (error) {
                 handleSignInError(error);

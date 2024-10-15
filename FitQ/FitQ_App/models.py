@@ -67,12 +67,12 @@ class WellnessTable(models.Model):
     alcohol_consumption = models.CharField(max_length=3, choices=[("Yes", "Yes"), ("No", "No")])
     date = models.DateField(auto_now_add=True)
 
-    def __str__(self):
+    def _str_(self):
         # Returns a readable string representation
         return f"Wellness Entry for Day {self.day} on {self.date}"
  
-    def __str__(self):
-        # You mentioned `email`, assuming it's related to the user, using `user.email`
+    def _str_(self):
+        # You mentioned email, assuming it's related to the user, using user.email
         return self.user.email if self.user else "No user"
     
 class Feedback(models.Model):
@@ -80,7 +80,7 @@ class Feedback(models.Model):
     email = models.EmailField()
     message = models.TextField()
 
-    def __str__(self):
+    def _str_(self):
         return self.name
     
 class UserDetails(models.Model):
@@ -99,7 +99,7 @@ class Trainer(models.Model):
     photo = models.ImageField(upload_to='trainers_photos/')
     available_for_booking = models.BooleanField(default=True)
 
-    def __str__(self):
+    def _str_(self):
         return self.user.email
     
 
@@ -107,5 +107,5 @@ class UserTrainerRelation(models.Model):
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name='assigned_trainers')
     trainer = models.ForeignKey(Trainer, on_delete=models.CASCADE, related_name='assigned_users')
 
-    def __str__(self):
+    def _str_(self):
         return f'{self.user.email} - {self.trainer.name}'

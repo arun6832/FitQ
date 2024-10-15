@@ -164,7 +164,7 @@ def monitoring(request):
         except Exception as e:
             messages.error(request, 'An error occurred while saving your data: {}'.format(str(e)))
             print("Error:", e)  # Print the error message for debugging
-            print("Error type:", type(e).__name__)  # Print the type of error
+            print("Error type:", type(e)._name_)  # Print the type of error
 
     return render(request, 'userdashboard/daily.html', {'success': False})
 
@@ -500,4 +500,4 @@ def select_trainer(request, trainer_id):
     # Create or update the user-trainer relationship
     relation, created = UserTrainerRelation.objects.get_or_create(user=request.user, trainer=trainer)
 
-    return redirect('userdashboard')  # Redirect to the user dashboard after selection
+    return redirect('userdashboard')  # Redirect to the user dashboard after selection
