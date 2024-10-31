@@ -7,7 +7,7 @@ from google.auth.transport import requests
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate,login, logout
 from django.contrib.auth.models import User
-from .models import MyUser, WellnessTable, Feedback, UserDetails,Trainer,UserTrainerRelation
+from .models import MyUser, WellnessTable, Feedback, UserDetails
 from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password
 from django.contrib import messages 
@@ -15,7 +15,7 @@ from django.utils import timezone
 from gtts import gTTS
 from django.conf import settings
 from django.views import View
-from .models import MyUser, UserTrainerRelation
+
 
 
 
@@ -435,69 +435,7 @@ def get_chatbot_response(user_message):
     return chatbot_responses.get(user_message, "Sorry, I didn't understand that.")
 
 def trainer_consulting(request):
-    trainers = Trainer.objects.filter(user__role='trainer')
-    return render(request, 'userdashboard/trainer_consulting.html', {'trainers': trainers})
+    return render(request, 'userdashboard/trainer_consulting.html')
 
-
-class TrainerRegistrationView(View):
-    def get(self, request):
-        return render(request, 'trainer/trainer_registration.html')
-
-    def post(self, request):
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-
-        # Basic validation
-        if email and password:
-            # Check if the email already exists
-            if MyUser.objects.filter(email=email).exists():
-                return render(request, 'trainer/trainer_registration.html', {'error': 'Email already exists.'})
-
-            try:
-                # Create a new trainer
-                MyUser.objects.create(
-                    email=email,
-                    password=make_password(password)  # Hash the password
-                )
-                return redirect('trainer_login')  # Correctly redirect to the login URL
-            except Exception as e:
-                # Handle other errors
-                return render(request, 'trainer/trainer_registration.html', {'error': str(e)})
-
-        return render(request, 'trainer/trainer_registration.html', {'error': 'Email and Password are required.'})
-
-class TrainerLoginView(View):
-    def get(self, request):
-        return render(request, 'trainer/trainer_login.html')
-
-    def post(self, request):
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-
-        user = authenticate(request, email=email, password=password)
-        
-        if user is not None:
-            login(request, user)
-            return redirect('trainer_dashboard')  # Redirect to the trainer dashboard after successful login
-        else:
-            return render(request, 'trainer/trainer_login.html', {'error': 'Invalid email or password.'})
-
-
-@login_required
-def trainer_dashboard(request):
-    if request.user.role != 'trainer':
-        return redirect('home')  # Redirect users who are not trainers
-
-    # Fetch users assigned to this trainer
-    assigned_users = UserTrainerRelation.objects.filter(trainer=request.user.trainer)
-    context = {'assigned_users': assigned_users}
-    return render(request, 'trainer/trainer_dashboard.html', context)
-
-@login_required
-def select_trainer(request, trainer_id):
-    trainer = Trainer.objects.get(id=trainer_id)
-    
-    # Create or update the user-trainer relationship
-    relation, created = UserTrainerRelation.objects.get_or_create(user=request.user, trainer=trainer)
-
-    return redirect('userdashboard')  # Redirect to the user dashboard after selection
+def trainerdashboard(request):
+    return render(request,'trainer/trainerdashboard.html')
