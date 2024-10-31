@@ -23,5 +23,6 @@ urlpatterns = [
     path('trainer_consulting',trainer_consulting,name='trainer_consulting'),
     path('chatbot/response/<str:pk>/', chatbot_response, name='chatbot_response'),
     path('trainerdashboard',trainerdashboard,name='trainerdashboard'),
+    path('useranalytics',useranalytics,name='useranalytics'),
     
 ]
