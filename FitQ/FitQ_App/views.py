@@ -434,4 +434,8 @@ def chatbot_response(request):
 def get_chatbot_response(user_message):
     return chatbot_responses.get(user_message, "Sorry, I didn't understand that.")
 
+def trainer_consulting(request):
+    return render(request, 'userdashboard/trainer_consulting.html')
 
+def trainerdashboard(request):
+    return render(request,'trainer/trainerdashboard.html')

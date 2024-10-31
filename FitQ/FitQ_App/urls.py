@@ -19,5 +19,9 @@ urlpatterns = [
     path('create/', create, name='create'),
     path('edit-profile/', edit_profile, name='edit_profile'),
     path('chatbot/', chatbot, name='chatbot'),
-    path('chatbot/response/', chatbot_response, name='chatbot_response'),  # URL for chatbot response
+    path('chatbot/response/', chatbot_response, name='chatbot_response'),
+    path('trainer_consulting',trainer_consulting,name='trainer_consulting'),
+    path('chatbot/response/<str:pk>/', chatbot_response, name='chatbot_response'),
+    path('trainerdashboard',trainerdashboard,name='trainerdashboard'),
+    
 ]
