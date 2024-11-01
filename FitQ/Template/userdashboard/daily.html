@@ -5,11 +5,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wellness Tracker</title>
+    <title>Monitoring</title>
+    <link rel="stylesheet" href="{% static 'css/userdashboard/app.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="{% static 'css/userdashboard/dailystyles.css' %}">
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
 </head>
 
 <body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src="{% static 'images/logo/FitQ.png'%}" alt="Company logo">
+            <div class="sidebar-close" id="sidebar-close">
+                <i class='bx bx-left-arrow-alt'></i>
+            </div>
+        </div>
+        <div class="sidebar-user">
+            <div class="sidebar-user-info">
+                {% if user_details.gender == "Male" %}
+                <img src="https://randomuser.me/api/portraits/men/10.jpg" alt="Male Avatar" class="profile-image">
+                {% elif user_details.gender == "Female" %}
+                <img src="https://randomuser.me/api/portraits/women/10.jpg" alt="Female Avatar" class="profile-image">
+                {% else %}
+                <img src="https://randomuser.me/api/portraits/lego/2.jpg" alt="Default Avatar" class="profile-image">
+                {% endif %}
+                <div class="sidebar-user-name">
+                    {{ request.user.username }} <!-- Use the logged-in user's username -->
+                </div>
+            </div>
+        </div>
+        <!-- SIDEBAR MENU -->
+        <ul class="sidebar-menu">
+            <li>
+                <a href="{% url 'userdashboard' %}">
+                    <i class='bx bx-home'></i>
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'useranalytics' %}">
+                    <i class='bx bx-chart'></i>
+                    <span>Analytics</span>
+                </a>
+            </li>
+            <li class="sidebar-submenu"  class="active">
+                <a href="{% url 'edit_profile' %}" class="sidebar-menu-dropdown">
+                    <i class='bx bx-user-circle'></i>
+                    <span>Edit Profile</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'trainer_consulting' %}">
+                    <i style="margin-left: 2px;" class="fa-duotone fa-solid fa-user-doctor fa-xl" style="--fa-primary-color: #0f0f0f; --fa-secondary-color: #000000;"></i>
+                    <span><b>Trainer Consulting</b></span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'daily' %}">
+                    <i class="fa-solid fa-bars-progress fa-xl" style="color: #4b494a;"></i>
+                    <span><b>Monitoring</b></span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'feedback' %}">
+                    <i class='bx bx-mail-send'></i>
+                    <span>Feedback</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'chatbot' %}">
+                    <i class='bx bx-chat'></i>
+                    <span>Chatbot</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'usercalender' %}">
+                    <i class='bx bx-calendar'></i>
+                    <span>Calendar</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'index' %}">
+                    <i class='bx bx-chat'></i>
+                    <span>Logout</span>
+                </a>
+            </li>
+        <!-- END SIDEBAR MENU -->
+    </div>
+    
     <div class="container">
         <h1>Wellness Tracker</h1>
 
