@@ -1,56 +1,88 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trainer Consulting</title>
-    <link rel="stylesheet" href="{% static 'css/userdashboard/app.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+        }
+
+        .book-btn {
+            background-color: #28a745;
+            color: white;
+            padding: 8px 12px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .book-btn:hover {
+            background-color: #218838;
+        }
+
+        .table-container {
+            margin: 20px auto;
+            width: 80%;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
-
 <body>
-    <!-- Sidebar inclusion here -->
 
-    <div class="main">
-        <div class="main-header">
-            <h1>Trainer Consulting</h1>
-        </div>
-        <div class="main-content">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Trainer ID</th>
-                        <th>Trainer Name</th>
-                        <th>Trainer Photo</th>
-                        <th>Specialization</th>
-                        <th>Book</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for trainer in trainers %}
-                    <tr>
-                        <td>{{ trainer.trainer_id }}</td>
-                        <td>{{ trainer.name }}</td>
-                        <td><img src="{{ trainer.photo.url }}" alt="{{ trainer.name }}" style="width: 100px; height: auto;"></td>
-                        <td>{{ trainer.specialization }}</td>
-                        <td>
-                            {% if trainer.available_for_booking %}
-                            <button class="btn btn-success">Book Now</button>
-                            {% else %}
-                            <button class="btn btn-secondary" disabled>Not Available</button>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
+<div class="table-container">
+    <h1>Trainer Consulting</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Trainer ID</th>
+                <th>Trainer Name</th>
+                <th>Photo</th>
+                <th>Specialization</th>
+                <th>Book Option</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for trainer in trainers %}
+            <tr>
+                <td>{{ trainer.user.id }}</td>
+                <td>{{ trainer.user.email }}</td>
+                <td><img src="{{ trainer.photo.url }}" alt="Trainer Photo"></td>
+                <td>{{ trainer.specialization }}</td>
+                <td><a href="#" class="book-btn">Book Now</a></td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No trainers available for booking at the moment.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
-    <!-- JS for any interactivity -->
-    <script src="{% static 'js/userdashboard/app.js' %}"></script>
 </body>
-
 </html>

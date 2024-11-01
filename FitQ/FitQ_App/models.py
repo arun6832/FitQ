@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.hashers import make_password
+
 
 class MyUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -20,19 +22,11 @@ class MyUserManager(BaseUserManager):
 class MyUser(AbstractBaseUser):
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=128)
-    ROLE_CHOICES = (
-        ('user', 'User'),
-        ('trainer', 'Trainer'),
-    )
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='user')
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
     objects = MyUserManager()
-
-    def is_trainer(self):
-        return self.role == 'trainer'
     
 class WellnessTable(models.Model):
     DAY_CHOICES = [
@@ -63,12 +57,12 @@ class WellnessTable(models.Model):
     alcohol_consumption = models.CharField(max_length=3, choices=[("Yes", "Yes"), ("No", "No")])
     date = models.DateField(auto_now_add=True)
 
-    def __str__(self):
+    def _str_(self):
         # Returns a readable string representation
         return f"Wellness Entry for Day {self.day} on {self.date}"
  
-    def __str__(self):
-        # You mentioned `email`, assuming it's related to the user, using `user.email`
+    def _str_(self):
+        # You mentioned email, assuming it's related to the user, using user.email
         return self.user.email if self.user else "No user"
     
 class Feedback(models.Model):
@@ -76,7 +70,7 @@ class Feedback(models.Model):
     email = models.EmailField()
     message = models.TextField()
 
-    def __str__(self):
+    def _str_(self):
         return self.name
     
 class UserDetails(models.Model):
