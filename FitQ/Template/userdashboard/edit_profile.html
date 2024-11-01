@@ -1,18 +1,21 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Profile</title>
     <link rel="stylesheet" href="{% static 'css/userdashboard/app.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="{% static 'css/userdashboard/grid.css' %}">
     <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
 </head>
+
 <body>
     <!-- SIDEBAR -->
     <div class="sidebar">
@@ -50,15 +53,16 @@
                     <span>Analytics</span>
                 </a>
             </li>
-            <li class="sidebar-submenu"  class="active">
+            <li class="sidebar-submenu" class="active">
                 <a href="#" class="sidebar-menu-dropdown">
                     <i class='bx bx-user-circle'></i>
                     <span>Edit Profile</span>
                 </a>
             </li>
             <li>
-                <a href="#">
-                    <i style="margin-left: 2px;" class="fa-duotone fa-solid fa-user-doctor fa-xl" style="--fa-primary-color: #0f0f0f; --fa-secondary-color: #000000;"></i>
+                <a href="{% url 'trainer_consulting' %}">
+                    <i style="margin-left: 2px;" class="fa-duotone fa-solid fa-user-doctor fa-xl"
+                        style="--fa-primary-color: #0f0f0f; --fa-secondary-color: #000000;"></i>
                     <span><b>Trainer Consulting</b></span>
                 </a>
             </li>
@@ -75,9 +79,9 @@
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="{% url 'chatbot' %}">
                     <i class='bx bx-chat'></i>
-                    <span>Chat</span>
+                    <span>Chatbot</span>
                 </a>
             </li>
             <li>
@@ -86,7 +90,14 @@
                     <span>Calendar</span>
                 </a>
             </li>
-            <li class="sidebar-submenu">
+
+            <li>
+                <a href="{% url 'index' %}">
+                    <i class='bx bx-chat'></i>
+                    <span>Logout</span>
+                </a>
+            </li>
+            <!-- <li class="sidebar-submenu">
                 <a href="#" class="sidebar-menu-dropdown">
                     <i class='bx bx-cog'></i>
                     <span>Settings</span>
@@ -101,8 +112,8 @@
                     </li>
                 </ul>
             </li>
-        </ul>
-        <!-- END SIDEBAR MENU -->
+        </ul> -->
+            <!-- END SIDEBAR MENU -->
     </div>
 
     <div class="main-content">
@@ -125,76 +136,65 @@
     <style>
         body {
             display: flex;
-            font-family: Arial, sans-serif; /* Font for the page */
+            font-family: Arial, sans-serif;
+            /* Font for the page */
         }
 
-        .sidebar {
-            width: 250px; /* Set the width of the sidebar */
-            background-color: #f4f4f4; /* Background color for the sidebar */
-            padding: 15px; /* Padding around sidebar items */
-            height: 100vh; /* Full height of the viewport */
-            position: fixed; /* Fixed position */
-        }
 
         .main-content {
-            margin-left: 250px; /* Space for the sidebar */
-            padding: 20px; /* Padding around main content */
-            width: calc(100% - 250px); /* Adjust width considering sidebar */
+            margin-left: 350px;
+            /* Space for the sidebar */
+            padding: 20px;
+            /* Padding around main content */
+            width: calc(100% - 250px);
+            /* Adjust width considering sidebar */
         }
 
-        .sidebar-menu {
-            list-style-type: none; /* Remove bullets from list */
-            padding: 0; /* Remove default padding */
-        }
-
-        .sidebar-menu li {
-            margin: 10px 0; /* Space between items */
-        }
-
-        .sidebar-menu li a {
-            text-decoration: none; /* Remove underline */
-            color: #333; /* Text color */
-            display: flex; /* Flexbox for icon and text alignment */
-            align-items: center; /* Center vertically */
-        }
-
-        .sidebar-menu li a:hover {
-            color: #007bff; /* Change color on hover */
-        }
-
-        .main-content h1 {
-            margin-bottom: 20px; /* Space below the heading */
-        }
 
         /* Additional styles for the form */
         form div {
-            margin-bottom: 15px; /* Space between form fields */
+            margin-bottom: 15px;
+            /* Space between form fields */
         }
 
         form label {
-            display: block; /* Block display for labels */
-            margin-bottom: 5px; /* Space below labels */
+            display: block;
+            /* Block display for labels */
+            margin-bottom: 5px;
+            /* Space below labels */
         }
 
         form input {
-            width: 100%; /* Full width of input fields */
-            padding: 8px; /* Padding inside input fields */
-            border: 1px solid #ccc; /* Border style */
-            border-radius: 4px; /* Rounded corners */
+            width: 100%;
+            /* Full width of input fields */
+            padding: 8px;
+            /* Padding inside input fields */
+            border: 1px solid #ccc;
+            /* Border style */
+            border-radius: 4px;
+            /* Rounded corners */
         }
 
         button {
-            padding: 10px 15px; /* Padding for buttons */
-            background-color: #007bff; /* Button background color */
-            color: white; /* Button text color */
-            border: none; /* Remove border */
-            border-radius: 4px; /* Rounded corners */
-            cursor: pointer; /* Pointer cursor on hover */
+            padding: 10px 15px;
+            /* Padding for buttons */
+            background-color: #007bff;
+            /* Button background color */
+            color: white;
+            /* Button text color */
+            border: none;
+            /* Remove border */
+            border-radius: 4px;
+            /* Rounded corners */
+            cursor: pointer;
+            /* Pointer cursor on hover */
         }
 
         button:hover {
-            background-color: #0056b3; /* Darker shade on hover */
+            background-color: #0056b3;
+            /* Darker shade on hover */
         }
     </style>
 </body>
+
 </html>
