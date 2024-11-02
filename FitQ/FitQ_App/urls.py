@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path
-from .views import *  # Import the view
+from .views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -13,7 +13,7 @@ urlpatterns = [
     path('daily/',daily,name='daily'),
     path('monitoring/',monitoring,name='monitoring'),
     path('usercalender/',usercalender,name='usercalender'),
-     path('sign_in/', sign_in, name='sign_in'),
+    path('sign_in/', sign_in, name='sign_in'),
     path('user_details/', user_details, name='user_details'),
     path('feedback/', feedback_form, name='feedback'),
     path('create/', create, name='create'),
@@ -24,5 +24,6 @@ urlpatterns = [
     path('chatbot/response/<str:pk>/', chatbot_response, name='chatbot_response'),
     path('trainerdashboard',trainerdashboard,name='trainerdashboard'),
     path('useranalytics',useranalytics,name='useranalytics'),
+    path('submit_feedback/',submit_feedback, name='submit_feedback'),
     
 ]

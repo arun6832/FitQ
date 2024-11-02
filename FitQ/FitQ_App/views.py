@@ -17,6 +17,7 @@ from django.conf import settings
 from django.views import View
 import json
 from django.db import models  # Import models for Count
+from django.views.decorators.http import require_POST
 
 
 
@@ -26,7 +27,18 @@ from django.db import models  # Import models for Count
 def index(request):
     return render(request, 'index.html')
 
+@require_POST
+def submit_feedback(request):
+    # Process the feedback form submission
+    name = request.POST.get('name')
+    email = request.POST.get('email')
+    message = request.POST.get('message')
 
+    # Save feedback to the database
+    Feedback.objects.create(name=name, email=email, message=message)
+    
+    # Redirect to a success page or back to the form
+    return redirect('index')
 
 
 def create_ac(request):
