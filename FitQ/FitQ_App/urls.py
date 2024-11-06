@@ -26,6 +26,4 @@ urlpatterns = [
     path('useranalytics',useranalytics,name='useranalytics'),
     path('trainersignup/', trainer_signup, name='trainer_signup'),
     path('trainerlogin/',trainer_login, name='trainerlogin'), 
-
-    
 ]

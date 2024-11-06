@@ -339,7 +339,7 @@ def create(request):
         except Exception as e:
             logger.error("Error creating UserDetails: %s", e)
             msg = "There was an error creating your account. Please try again."
-            return render(request, 'sign_in.html', {'msg': msg, 'error': str(e)})
+            return render(request, 'sign_in.html')
 
     return render(request, 'sign_in.html')
 
