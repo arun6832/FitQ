@@ -19,15 +19,8 @@ import json
 from django.db import models  # Import models for Count
 
 
-
-
-
-
 def index(request):
     return render(request, 'index.html')
-
-
-
 
 def create_ac(request):
     if request.method == 'POST':
@@ -277,6 +270,15 @@ def feedback_form(request):
         return redirect(userdashboard)
     return render(request, 'userdashboard/feedbackform.html')
 
+from django.db import transaction
+from django.contrib.auth.hashers import make_password
+
+from django.db import transaction
+from django.contrib.auth.hashers import make_password
+import logging
+
+logger = logging.getLogger(__name__)
+
 def create(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -308,36 +310,52 @@ def create(request):
             msg = "Email already exists!"
             return render(request, 'sign_in.html', {'msg': msg})
 
-        # Create the User object
-        user = User.objects.create(
-            username=username,
-            email=email,
-            first_name=first_name,
-            last_name=last_name,
-            password=make_password(password1)
-        )
-        user.save()
+        try:
+            with transaction.atomic():
+                # Create the User object
+                user = User.objects.create(
+                    username=username,
+                    email=email,
+                    first_name=first_name,
+                    last_name=last_name,
+                    password=make_password(password1)
+                )
+                logger.info("User created successfully: %s", user)
 
-        # Create UserDetails record
-        user_details = UserDetails.objects.create(
-            user=user,
-            gender=gender,
-            date_of_birth=dob,
-            country=country,
-            employment_status=employment,
-            height=height,
-            weight=weight,
-            is_profile_complete=False
-        )
-        user_details.save()
+                # Debug print statements to verify data before creating UserDetails
+                print("Gender:", gender)
+                print("Employment Status:", employment)
+                print("Date of Birth:", dob)
+                print("Country:", country)
+                print("Height:", height)
+                print("Weight:", weight)
 
-        # Automatically log in the user after sign up
-        login(request, user)
+                # Convert height and weight to appropriate types
+                user_details = UserDetails.objects.create(
+                    user=user,
+                    gender=gender,
+                    date_of_birth=dob,
+                    country=country,
+                    employment_status=employment,
+                    height=float(height),
+                    weight=float(weight),
+                    is_profile_complete=False
+                )
+                logger.info("UserDetails created successfully: %s", user_details)
 
-        # Redirect to dashboard after successful registration
-        return redirect('userdashboard')  # Change to your appropriate dashboard
+            # Automatically log in the user after sign up
+            login(request, user)
+
+            # Redirect to dashboard after successful registration
+            return redirect('userdashboard')  # Adjust to your appropriate dashboard
+
+        except Exception as e:
+            logger.error("Error creating UserDetails: %s", e)
+            msg = "There was an error creating your account. Please try again."
+            return render(request, 'sign_in.html', {'msg': msg, 'error': str(e)})
 
     return render(request, 'sign_in.html')
+
 
 
 
@@ -503,4 +521,41 @@ def trainer_consulting(request):
 def trainerdashboard(request):
     return render(request,'trainer/trainerdashboard.html')
 
+from .models import Trainer
+def trainer_signup(request):
+    if request.method == 'POST':
+        email = request.POST.get('email').lower()  # Normalize email to lowercase
+        password = request.POST.get('password')
+        name = request.POST.get('name')
 
+        # Check if all fields are provided
+        if not email or not password or not name:
+            return HttpResponse("All fields are required", status=400)
+
+        # Check if the email already exists in the database
+        if Trainer.objects.filter(email=email).exists():
+            return HttpResponse("Email already exists. Please use a different email.", status=400)
+
+        # Create the trainer user and hash the password
+        trainer = Trainer.objects.create_trainer(email=email, password=password, name=name)
+        return redirect('trainerlogin')  # Redirect to login after sign-up
+
+    return render(request, 'trainer/trainersignup.html')
+
+
+
+def trainer_login(request):
+    if request.method == 'POST':
+        email = request.POST.get('email').lower()  # Normalize the email to lowercase
+        password = request.POST.get('password')
+
+        # Authenticate the user using email as the username
+        user = authenticate(request, username=email, password=password)
+
+        if user is not None:
+            login(request, user)  # Log the user in
+            return redirect('trainerdashboard')  # Redirect to a dashboard or home page after login
+        else:
+            return HttpResponse("Invalid credentials", status=400)  # If authentication fails
+
+    return render(request, 'trainer/trainerlogin.html')

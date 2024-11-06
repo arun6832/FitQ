@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.hashers import make_password
+from pydantic import validate_email
 
 
 class MyUserManager(BaseUserManager):
@@ -74,12 +75,51 @@ class Feedback(models.Model):
         return self.name
     
 class UserDetails(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     gender = models.CharField(max_length=10)
     date_of_birth = models.DateField()
     country = models.CharField(max_length=50)
     employment_status = models.CharField(max_length=50)
-    height = models.FloatField()    
-    weight = models.FloatField()
+    height = models.DecimalField(max_digits=5, decimal_places=2)
+    weight = models.DecimalField(max_digits=5, decimal_places=2)
     is_profile_complete = models.BooleanField(default=False)
     
+from django.contrib.auth.models import AbstractBaseUser
+from django.db import models
+from django.core.exceptions import ValidationError
+from django.core.validators import EmailValidator
+
+# Custom normalize_email function
+def normalize_email(email):
+    validator = EmailValidator()
+    try:
+        validator(email)  # This will normalize the email
+        return email.lower()  # Ensure email is lowercase
+    except ValidationError:
+        raise ValueError("Invalid email address")
+
+class TrainerManager(BaseUserManager):
+    def create_trainer(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError('The Email field must be set')
+        email = email.lower()  # Normalize email to lowercase
+        trainer = self.model(email=email, **extra_fields)
+        trainer.set_password(password)  # Hash the password before saving
+        trainer.save(using=self._db)
+        return trainer
+
+class Trainer(AbstractBaseUser):
+    email = models.EmailField(unique=True)
+    password = models.CharField(max_length=128)
+    name = models.CharField(max_length=255)
+    is_active = models.BooleanField(default=True)
+
+    objects = TrainerManager()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['name']
+
+    def __str__(self):
+        return self.name
+    
+
