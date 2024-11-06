@@ -72,7 +72,7 @@ https://www.tooplate.com/view/2119-gymso-fitness
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a href="sign_in" class="nav-link smoothScroll">SignUp/SignIn</a>
+                        <a href="{% url 'create' %}" class="nav-link smoothScroll">SignUp/SignIn</a>
                     </li>
                     {% endif %}
 
@@ -440,13 +440,7 @@ https://www.tooplate.com/view/2119-gymso-fitness
                 <div class="ml-auto col-lg-5 col-md-6 col-12">
                     <h2 class="mb-4 pb-2" data-aos="fade-up" data-aos-delay="200">Feel free to ask anything</h2>
                 
-                    <form action="{% url 'submit_feedback' %}" method="post" class="contact-form webform" data-aos="fade-up" data-aos-delay="400" role="form">
-                        {% csrf_token %}
-                        <input type="text" class="form-control" name="name" placeholder="Name" required>
-                        <input type="email" class="form-control" name="email" placeholder="Email" required>
-                        <textarea class="form-control" rows="5" name="message" placeholder="Message" required></textarea>
-                        <button type="submit" class="form-control" id="submit-button" name="submit">Send Message</button>
-                    </form>
+                    
                 </div>
                 
 
