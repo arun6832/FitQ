@@ -24,5 +24,8 @@ urlpatterns = [
     path('chatbot/response/<str:pk>/', chatbot_response, name='chatbot_response'),
     path('trainerdashboard',trainerdashboard,name='trainerdashboard'),
     path('useranalytics',useranalytics,name='useranalytics'),
+    path('trainersignup/', trainer_signup, name='trainer_signup'),
+    path('trainerlogin/',trainer_login, name='trainerlogin'), 
+
     
 ]

@@ -113,4 +113,8 @@ LOGGING = {
 
 LOGIN_URL = 'sign_in'
 
+AUTHENTICATION_BACKENDS = [
+    'FitQ_App.backends.EmailBackend',  # Replace 'yourapp' with your actual app name
+    'django.contrib.auth.backends.ModelBackend',
+]
 

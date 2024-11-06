@@ -508,4 +508,41 @@ def trainer_consulting(request):
 def trainerdashboard(request):
     return render(request,'trainer/trainerdashboard.html')
 
+from .models import Trainer
+def trainer_signup(request):
+    if request.method == 'POST':
+        email = request.POST.get('email').lower()  # Normalize email to lowercase
+        password = request.POST.get('password')
+        name = request.POST.get('name')
 
+        # Check if all fields are provided
+        if not email or not password or not name:
+            return HttpResponse("All fields are required", status=400)
+
+        # Check if the email already exists in the database
+        if Trainer.objects.filter(email=email).exists():
+            return HttpResponse("Email already exists. Please use a different email.", status=400)
+
+        # Create the trainer user and hash the password
+        trainer = Trainer.objects.create_trainer(email=email, password=password, name=name)
+        return redirect('trainerlogin')  # Redirect to login after sign-up
+
+    return render(request, 'trainer/trainersignup.html')
+
+
+
+def trainer_login(request):
+    if request.method == 'POST':
+        email = request.POST.get('email').lower()  # Normalize the email to lowercase
+        password = request.POST.get('password')
+
+        # Authenticate the user using email as the username
+        user = authenticate(request, username=email, password=password)
+
+        if user is not None:
+            login(request, user)  # Log the user in
+            return redirect('trainerdashboard')  # Redirect to a dashboard or home page after login
+        else:
+            return HttpResponse("Invalid credentials", status=400)  # If authentication fails
+
+    return render(request, 'trainer/trainerlogin.html')
