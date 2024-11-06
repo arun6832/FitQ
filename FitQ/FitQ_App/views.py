@@ -101,8 +101,22 @@ def usercalender(request):
 
 @login_required
 def monitoring(request):
+    user = request.user
+
+    # Check if the session variable 'current_day' is set; if not, initialize to 1
+    if 'current_day' not in request.session:
+        request.session['current_day'] = 1
+
+    # Check if the session variable 'completed' is set to True to track if the user has completed all 7 days
+    if 'completed' not in request.session:
+        request.session['completed'] = False
+
+    current_day = request.session['current_day']
+    details_saved = False
+    success_message = ''
+
     if request.method == 'POST':
-        # Extract form data
+        # Extract form data from POST request
         sleep_duration = request.POST.get('sleep_duration_hours')
         workout_duration = request.POST.get('workout_duration')
         problems_during_day = request.POST.get('problems_during_day')
@@ -113,57 +127,56 @@ def monitoring(request):
         smoking_habit = request.POST.get('smoking_habit')
         alcohol_consumption = request.POST.get('alcohol_consumption')
 
-        # Debugging: print all values
-        print("Form Data:", {
-            'user': request.user,
-            'day': "1",
-            'sleep_duration': sleep_duration,
-            'workout_duration': workout_duration,
-            'problems_during_day': problems_during_day,
-            'water_intake': water_intake,
-            'screen_time': screen_time,
-            'food_on_time': food_on_time,
-            'type_of_food': type_of_food,
-            'smoking_habit': smoking_habit,
-            'alcohol_consumption': alcohol_consumption
-        })
-
         try:
-            # Create and save a new wellness entry
+            # Save a new wellness entry
             wellness_entry = WellnessTable(
-                user=request.user,
-                day="1",
-                sleep_duration_hours=float(sleep_duration),  # Ensure conversion to float
+                user=user,
+                day=current_day,
+                sleep_duration_hours=float(sleep_duration) if sleep_duration else 0.0,
                 workout_duration=workout_duration,
                 problems_during_day=problems_during_day,
-                water_intake_liters=float(water_intake),  # Ensure conversion to float
-                screen_time=float(screen_time),  # Ensure conversion to float
+                water_intake_liters=float(water_intake) if water_intake else 0.0,
+                screen_time=float(screen_time) if screen_time else 0.0,
                 food_on_time=food_on_time,
                 type_of_food=type_of_food,
                 smoking_habit=smoking_habit,
                 alcohol_consumption=alcohol_consumption
             )
             wellness_entry.save()
-            messages.success(request, 'Details saved successfully!')
-            return render(request, 'userdashboard/daily.html', {
-                'success': True,
-                # Pass the submitted data back to the template
-                'sleep_duration': sleep_duration,
-                'workout_duration': workout_duration,
-                'problems_during_day': problems_during_day,
-                'water_intake': water_intake,
-                'screen_time': screen_time,
-                'food_on_time': food_on_time,
-                'type_of_food': type_of_food,
-                'smoking_habit': smoking_habit,
-                'alcohol_consumption': alcohol_consumption,
-            })
-        except Exception as e:
-            messages.error(request, 'An error occurred while saving your data: {}'.format(str(e)))
-            print("Error:", e)  # Print the error message for debugging
-            print("Error type:", type(e)._name_)  # Print the type of error
 
-    return render(request, 'userdashboard/daily.html', {'success': False})
+            # Mark as saved successfully
+            details_saved = True
+
+            # If it is Day 7, set the 'completed' flag to True and show the success message
+            if current_day == 7:
+                request.session['completed'] = True
+                success_message = "Congratulations! You have successfully filled out all 7 days of the wellness tracker."
+
+            # Increment the day, or if current day is 7, set completed status to True
+            if current_day < 7:
+                current_day += 1
+            else:
+                current_day = 7  # Keep it at 7 since the user is done
+
+            # Update the session with the new day
+            request.session['current_day'] = current_day
+
+        except ValueError as ve:
+            messages.error(request, 'Please enter valid numerical values for sleep, water intake, and screen time.')
+            print("Value Error:", ve)
+        except Exception as e:
+            messages.error(request, f'An error occurred while saving your data: {str(e)}')
+            print("Error:", e)
+
+    # Render the template with the current day, saved status, and success message
+    return render(request, 'userdashboard/daily.html', {
+        'details_saved': details_saved,
+        'current_day': current_day,
+        'completed': request.session['completed'],  # Pass completion status to template
+        'success_message': success_message  # Pass success message if Day 7 is filled
+    })
+
+
 
 # Sign-in view
 def sign_in(request):
