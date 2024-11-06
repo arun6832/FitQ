@@ -74,12 +74,12 @@ class Feedback(models.Model):
         return self.name
     
 class UserDetails(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     gender = models.CharField(max_length=10)
     date_of_birth = models.DateField()
     country = models.CharField(max_length=50)
     employment_status = models.CharField(max_length=50)
-    height = models.FloatField()    
-    weight = models.FloatField()
+    height = models.DecimalField(max_digits=5, decimal_places=2)
+    weight = models.DecimalField(max_digits=5, decimal_places=2)
     is_profile_complete = models.BooleanField(default=False)
     

@@ -19,15 +19,8 @@ import json
 from django.db import models  # Import models for Count
 
 
-
-
-
-
 def index(request):
     return render(request, 'index.html')
-
-
-
 
 def create_ac(request):
     if request.method == 'POST':
@@ -264,6 +257,15 @@ def feedback_form(request):
         return redirect(userdashboard)
     return render(request, 'userdashboard/feedbackform.html')
 
+from django.db import transaction
+from django.contrib.auth.hashers import make_password
+
+from django.db import transaction
+from django.contrib.auth.hashers import make_password
+import logging
+
+logger = logging.getLogger(__name__)
+
 def create(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -295,36 +297,52 @@ def create(request):
             msg = "Email already exists!"
             return render(request, 'sign_in.html', {'msg': msg})
 
-        # Create the User object
-        user = User.objects.create(
-            username=username,
-            email=email,
-            first_name=first_name,
-            last_name=last_name,
-            password=make_password(password1)
-        )
-        user.save()
+        try:
+            with transaction.atomic():
+                # Create the User object
+                user = User.objects.create(
+                    username=username,
+                    email=email,
+                    first_name=first_name,
+                    last_name=last_name,
+                    password=make_password(password1)
+                )
+                logger.info("User created successfully: %s", user)
 
-        # Create UserDetails record
-        user_details = UserDetails.objects.create(
-            user=user,
-            gender=gender,
-            date_of_birth=dob,
-            country=country,
-            employment_status=employment,
-            height=height,
-            weight=weight,
-            is_profile_complete=False
-        )
-        user_details.save()
+                # Debug print statements to verify data before creating UserDetails
+                print("Gender:", gender)
+                print("Employment Status:", employment)
+                print("Date of Birth:", dob)
+                print("Country:", country)
+                print("Height:", height)
+                print("Weight:", weight)
 
-        # Automatically log in the user after sign up
-        login(request, user)
+                # Convert height and weight to appropriate types
+                user_details = UserDetails.objects.create(
+                    user=user,
+                    gender=gender,
+                    date_of_birth=dob,
+                    country=country,
+                    employment_status=employment,
+                    height=float(height),
+                    weight=float(weight),
+                    is_profile_complete=False
+                )
+                logger.info("UserDetails created successfully: %s", user_details)
 
-        # Redirect to dashboard after successful registration
-        return redirect('userdashboard')  # Change to your appropriate dashboard
+            # Automatically log in the user after sign up
+            login(request, user)
+
+            # Redirect to dashboard after successful registration
+            return redirect('userdashboard')  # Adjust to your appropriate dashboard
+
+        except Exception as e:
+            logger.error("Error creating UserDetails: %s", e)
+            msg = "There was an error creating your account. Please try again."
+            return render(request, 'sign_in.html', {'msg': msg, 'error': str(e)})
 
     return render(request, 'sign_in.html')
+
 
 
 
