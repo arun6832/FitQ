@@ -123,4 +123,4 @@ FitQ is licensed under the MIT License. See the [LICENSE](LICENSE) file for more
 
 ## Contact
 
-For questions or support, please reach out to us at [your-email@example.com](mailto:your-email@example.com).
+For questions or support, please reach out to us at [arunpappulli@gmail.com](mailto:your-email@example.com).

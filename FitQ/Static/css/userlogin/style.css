@@ -196,6 +196,36 @@ a.google span{
     border-radius: 6px;
     background: #FFF;
 }
+
+/* Add this to your existing CSS */
+
+/* Container for the signup form boxes */
+.signup-box {
+    display: flex; /* Use flexbox for layout */
+    justify-content: space-between; /* Space between boxes */
+    margin-top: 20px; /* Space above the boxes */
+}
+
+/* Styling for each box */
+.box {
+    flex: 1; /* Each box takes equal space */
+    background: #f9f9f9; /* Light background color for the boxes */
+    padding: 20px; /* Padding inside the boxes */
+    border-radius: 6px; /* Rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    margin: 0 10px; /* Space between boxes */
+}
+
+/* Optional: add hover effect */
+.box:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* More pronounced shadow on hover */
+}
+
+/* Styling for the form input fields */
+.input-field {
+    margin-bottom: 15px; /* Space below each input field */
+}
+
 .form.signup{
     opacity: 0;
     pointer-events: none;
@@ -341,3 +371,5 @@ a.google span{
     }
 
 }
+
+
