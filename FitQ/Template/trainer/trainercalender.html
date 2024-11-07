@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
-        User Dashboard
+        Trainer Dashboard
     </title>
     <link rel="shortcut icon" href="/images/logo-mb.png" type="image/png">
     <!-- GOOGLE FONT -->
@@ -47,14 +47,14 @@
                 <img src="https://randomuser.me/api/portraits/lego/2.jpg" alt="Default Avatar" class="profile-image">
                 {% endif %}
                 <div class="sidebar-user-name">
-                    {{ trainer.name }} <!-- Display trainer's name instead of username -->
+                    {{ request.user.username }} <!-- Use the logged-in user's username -->
                 </div>
             </div>
-        </div>        
+        </div>
         <!-- SIDEBAR MENU -->
         <ul class="sidebar-menu">
             <li>
-                <a href="#" class="active">
+                <a href="{% url 'trainerdashboard' %}" class="active">
                     <i class='bx bx-home'></i>
                     <span>Home</span>
                 </a>

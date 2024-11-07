@@ -133,12 +133,22 @@ https://www.tooplate.com/view/2119-gymso-fitness
             <div class="row">
                 <div class="col-lg-8 col-md-10 mx-auto col-12">
                     <div class="hero-text mt-5 text-center">
-                        <style>h6[data-aos="fade-up"] {color: #ffffff; }</style><h6 data-aos="fade-up" data-aos-delay="300">
-                            Take control of your health, one habit at a time! </h6> 
+                        <style>
+                            h6[data-aos="fade-up"] {
+                                color: #ffffff;
+                            }
+                        </style>
+                        <h6 data-aos="fade-up" data-aos-delay="300">
+                            Take control of your health, one habit at a time! </h6>
                         <h1 class="text-white" data-aos="fade-up" data-aos-delay="500">Your personalized wellness
                             journey starts here</h1>
-                            <style>a[data-aos="fade-up"][data-aos-delay="600"] {color: #ffffff; } </style> <a href="#feature" class="btn custom-btn mt-3" data-aos="fade-up" data-aos-delay="600"> Start Today</a>
-                            
+                        <style>
+                            a[data-aos="fade-up"][data-aos-delay="600"] {
+                                color: #ffffff;
+                            }
+                        </style> <a href="#feature" class="btn custom-btn mt-3" data-aos="fade-up" data-aos-delay="600">
+                            Start Today</a>
+
                         <a href="#about" class="btn custom-btn bordered mt-3" data-aos="fade-up"
                             data-aos-delay="700">learn more</a>
                     </div>
@@ -439,10 +449,28 @@ https://www.tooplate.com/view/2119-gymso-fitness
 
                 <div class="ml-auto col-lg-5 col-md-6 col-12">
                     <h2 class="mb-4 pb-2" data-aos="fade-up" data-aos-delay="200">Feel free to ask anything</h2>
-                
-                    
+
+                    <form action="{% url 'contact' %}" method="post" class="contact-form webform" data-aos="fade-up"
+                        data-aos-delay="400" role="form">
+                        {% csrf_token %}
+                        <input type="text" class="form-control" name="cf-name" placeholder="Name" required>
+
+                        <input type="email" class="form-control" name="cf-email" placeholder="Email" required>
+
+                        <textarea class="form-control" rows="5" name="cf-message" placeholder="Message"
+                            required></textarea>
+
+                        <button type="submit" class="form-control" id="submit-button" name="submit">Send
+                            Message</button>
+                    </form>
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-success">{{ message }}</div>
+                    {% endfor %}
+                    {% endif %}
                 </div>
-                
+
+
 
                 <div class="mx-auto mt-4 mt-lg-0 mt-md-0 col-lg-5 col-md-6 col-12">
                     <h2 class="mb-4" data-aos="fade-up" data-aos-delay="600">Where you can <span>find us</span></h2>

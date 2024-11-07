@@ -16,7 +16,7 @@ from gtts import gTTS
 from django.conf import settings
 from django.views import View
 import json
-from django.db import models  # Import models for Count
+from django.db import models  
 
 
 def index(request):
@@ -578,8 +578,21 @@ def useranalytics(request):
 def trainer_consulting(request):
     return render(request, 'userdashboard/trainer_consulting.html')
 
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .models import Trainer
+
+
 def trainerdashboard(request):
-    return render(request,'trainer/trainerdashboard.html')
+    # Check if the user is a Trainer by verifying the existence in the Trainer model
+    try:
+        trainer = Trainer.objects.get(email=request.user.email)
+    except Trainer.DoesNotExist:
+        # Redirect or return an error if the logged-in user is not a Trainer
+        return redirect('/not-authorized/')  # Replace with an appropriate path or error page
+
+    return render(request, 'trainer/trainerdashboard.html', {'trainer': trainer})
+
 
 from .models import Trainer
 def trainer_signup(request):
@@ -670,3 +683,25 @@ def predict_view(request):
 
     # Render the prediction to the template
     return render(request, "userdashboard/userprediciton.html", {"prediction": prediction})
+
+def trainercalender(request):
+    return render(request, 'trainer/trainercalender.html')
+
+
+from .models import Message
+from django.contrib import messages as flash_messages  # Django's messages framework for feedback
+def contact_form_view(request):
+    if request.method == 'POST':
+        name = request.POST.get('cf-name')
+        email = request.POST.get('cf-email')
+        message_content = request.POST.get('cf-message')
+
+        # Save the message to the database
+        Message.objects.create(name=name, email=email, message=message_content)
+
+        # Use Django's messages framework to add a success message
+        flash_messages.success(request, "Your message has been sent successfully!")
+
+        return redirect('contact')  # Redirect to a 'contact' page or another view
+
+    return render(request, 'index.html')  # Replace 'contact_form.html' with your actual template

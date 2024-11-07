@@ -27,6 +27,9 @@ urlpatterns = [
     path('useranalytics',useranalytics,name='useranalytics'),
     path('trainersignup/', trainer_signup, name='trainer_signup'),
     path('trainerlogin/',trainer_login, name='trainerlogin'), 
-        path('predict/', predict_view, name='predict'),  # URL for the prediction page
+    path('predict/', predict_view, name='predict'),
+    path('trainercalender',trainercalender,name='trainercalender'),
+        path('contact/', contact_form_view, name='contact'),
+ 
 
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
