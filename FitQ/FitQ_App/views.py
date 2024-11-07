@@ -107,7 +107,7 @@ def monitoring(request):
     if 'current_day' not in request.session:
         request.session['current_day'] = 1
 
-    # Check if the session variable 'completed' is set to True to track if the user has completed all 7 days
+    # Check if the session variable 'completed' is set to track if the user has completed all 7 days
     if 'completed' not in request.session:
         request.session['completed'] = False
 
@@ -128,7 +128,7 @@ def monitoring(request):
         alcohol_consumption = request.POST.get('alcohol_consumption')
 
         try:
-            # Save a new wellness entry
+            # Save a new wellness entry for the current day
             wellness_entry = WellnessTable(
                 user=user,
                 day=current_day,
@@ -168,14 +168,31 @@ def monitoring(request):
             messages.error(request, f'An error occurred while saving your data: {str(e)}')
             print("Error:", e)
 
-    # Render the template with the current day, saved status, and success message
-    return render(request, 'userdashboard/daily.html', {
+    # Query all the user's entries to display previously submitted data
+    submitted_data = {
+        entry.day: {
+            "sleep_duration": entry.sleep_duration_hours,
+            "workout_duration": entry.workout_duration,
+            "problems_during_day": entry.problems_during_day,
+            "water_intake": entry.water_intake_liters,
+            "screen_time": entry.screen_time,
+            "food_on_time": entry.food_on_time,
+            "type_of_food": entry.type_of_food,
+            "smoking_habit": entry.smoking_habit,
+            "alcohol_consumption": entry.alcohol_consumption,
+        }
+        for entry in WellnessTable.objects.filter(user=user)
+    }
+
+    context = {
         'details_saved': details_saved,
         'current_day': current_day,
-        'completed': request.session['completed'],  # Pass completion status to template
-        'success_message': success_message  # Pass success message if Day 7 is filled
-    })
+        'completed': request.session['completed'],  # Completion status for the template
+        'success_message': success_message,         # Success message for Day 7
+        'submitted_data': submitted_data            # Previously submitted data for each day
+    }
 
+    return render(request, 'userdashboard/daily.html', context)
 
 
 # Sign-in view
