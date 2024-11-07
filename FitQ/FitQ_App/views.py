@@ -194,7 +194,6 @@ def monitoring(request):
 
     return render(request, 'userdashboard/daily.html', context)
 
-
 # Sign-in view
 def sign_in(request):
     if request.method == 'POST':
@@ -485,21 +484,36 @@ def chatbot_response(request):
     response = get_chatbot_response(user_message)
     return JsonResponse({'response': response})
 
+from decimal import Decimal
+def convert_decimals_to_floats(data):
+    if isinstance(data, list):
+        # Recursively process each item in a list
+        return [convert_decimals_to_floats(item) for item in data]
+    elif isinstance(data, dict):
+        # Recursively process each value in a dictionary
+        return {key: convert_decimals_to_floats(value) for key, value in data.items()}
+    elif isinstance(data, Decimal):
+        # Convert Decimal to float
+        return float(data)
+    else:
+        # Return other types as is
+        return data
+
 @login_required
 def useranalytics(request):
-    # Data preparation
-    workout_durations = list(WellnessTable.objects.values('day', 'workout_duration'))
-    food_counts = WellnessTable.objects.values('type_of_food').annotate(count=models.Count('type_of_food'))
-    sleep_heatmap = WellnessTable.objects.values_list('day', 'sleep_duration_hours')
-    alcohol_counts = WellnessTable.objects.values('alcohol_consumption').annotate(count=models.Count('alcohol_consumption'))
-    smoking_counts = WellnessTable.objects.values('smoking_habit').annotate(count=models.Count('smoking_habit'))
+    # Get the logged-in user
+    user = request.user
 
-    # Debugging: Print the raw data
-    print("Workout Durations:", workout_durations)
-    print("Food Counts:", list(food_counts))
-    print("Sleep Heatmap:", list(sleep_heatmap))
-    print("Alcohol Counts:", list(alcohol_counts))
-    print("Smoking Counts:", list(smoking_counts))
+    # Query data specific to the logged-in user
+    workout_durations = list(WellnessTable.objects.filter(user=user).values('day', 'workout_duration'))
+    food_counts = WellnessTable.objects.filter(user=user).values('type_of_food').annotate(count=models.Count('type_of_food'))
+    sleep_heatmap = WellnessTable.objects.filter(user=user).values_list('day', 'sleep_duration_hours')
+    alcohol_counts = WellnessTable.objects.filter(user=user).values('alcohol_consumption').annotate(count=models.Count('alcohol_consumption'))
+    smoking_counts = WellnessTable.objects.filter(user=user).values('smoking_habit').annotate(count=models.Count('smoking_habit'))
+    
+    # New queries for water intake and screen time
+    water_intake = WellnessTable.objects.filter(user=user).values('day', 'water_intake_liters')
+    screen_time = WellnessTable.objects.filter(user=user).values('day', 'screen_time')
 
     # Prepare the data structures for JSON
     workout_data = {
@@ -511,12 +525,25 @@ def useranalytics(request):
     alcohol_data = {entry['alcohol_consumption']: entry['count'] for entry in alcohol_counts}
     smoking_data = {entry['smoking_habit']: entry['count'] for entry in smoking_counts}
 
-    # Debugging: Print the prepared JSON data
-    print("Workout Data:", workout_data)
-    print("Food Data:", food_data)
-    print("Sleep Data:", sleep_data)
-    print("Alcohol Data:", alcohol_data)
-    print("Smoking Data:", smoking_data)
+    # Prepare the new data for water intake and screen time
+    water_data = {
+        'days': [entry['day'] for entry in water_intake],
+        'water': [entry['water_intake_liters'] for entry in water_intake]
+    }
+
+    screen_time_data = {
+        'days': [entry['day'] for entry in screen_time],
+        'screen_time': [entry['screen_time'] for entry in screen_time]
+    }
+
+    # Convert all Decimal data to float
+    workout_data = convert_decimals_to_floats(workout_data)
+    food_data = convert_decimals_to_floats(food_data)
+    sleep_data = convert_decimals_to_floats(sleep_data)
+    alcohol_data = convert_decimals_to_floats(alcohol_data)
+    smoking_data = convert_decimals_to_floats(smoking_data)
+    water_data = convert_decimals_to_floats(water_data)
+    screen_time_data = convert_decimals_to_floats(screen_time_data)
 
     # Send JSON data to template
     context = {
@@ -524,9 +551,11 @@ def useranalytics(request):
         'food_counts': json.dumps(food_data),
         'sleep_heatmap': json.dumps(sleep_data),
         'alcohol_counts': json.dumps(alcohol_data),
-        'smoking_counts': json.dumps(smoking_data)
+        'smoking_counts': json.dumps(smoking_data),
+        'water_data': json.dumps(water_data),
+        'screen_time_data': json.dumps(screen_time_data),
     }
-    
+
     return render(request, 'userdashboard/useranalytics.html', context)
 
 def get_chatbot_response(user_message):
