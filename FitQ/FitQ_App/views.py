@@ -107,7 +107,7 @@ def monitoring(request):
     if 'current_day' not in request.session:
         request.session['current_day'] = 1
 
-    # Check if the session variable 'completed' is set to True to track if the user has completed all 7 days
+    # Check if the session variable 'completed' is set to track if the user has completed all 7 days
     if 'completed' not in request.session:
         request.session['completed'] = False
 
@@ -128,7 +128,7 @@ def monitoring(request):
         alcohol_consumption = request.POST.get('alcohol_consumption')
 
         try:
-            # Save a new wellness entry
+            # Save a new wellness entry for the current day
             wellness_entry = WellnessTable(
                 user=user,
                 day=current_day,
@@ -168,15 +168,31 @@ def monitoring(request):
             messages.error(request, f'An error occurred while saving your data: {str(e)}')
             print("Error:", e)
 
-    # Render the template with the current day, saved status, and success message
-    return render(request, 'userdashboard/daily.html', {
+    # Query all the user's entries to display previously submitted data
+    submitted_data = {
+        entry.day: {
+            "sleep_duration": entry.sleep_duration_hours,
+            "workout_duration": entry.workout_duration,
+            "problems_during_day": entry.problems_during_day,
+            "water_intake": entry.water_intake_liters,
+            "screen_time": entry.screen_time,
+            "food_on_time": entry.food_on_time,
+            "type_of_food": entry.type_of_food,
+            "smoking_habit": entry.smoking_habit,
+            "alcohol_consumption": entry.alcohol_consumption,
+        }
+        for entry in WellnessTable.objects.filter(user=user)
+    }
+
+    context = {
         'details_saved': details_saved,
         'current_day': current_day,
-        'completed': request.session['completed'],  # Pass completion status to template
-        'success_message': success_message  # Pass success message if Day 7 is filled
-    })
+        'completed': request.session['completed'],  # Completion status for the template
+        'success_message': success_message,         # Success message for Day 7
+        'submitted_data': submitted_data            # Previously submitted data for each day
+    }
 
-
+    return render(request, 'userdashboard/daily.html', context)
 
 # Sign-in view
 def sign_in(request):
@@ -466,23 +482,53 @@ def chatbot(request):
 def chatbot_response(request):
     user_message = request.GET.get('message', '').lower()
     response = get_chatbot_response(user_message)
-    return JsonResponse({'response': response})
+    
+    return JsonResponse({'response': response[0], 'audio_url': response[1]})
+
+def get_chatbot_response(user_message):
+    # Get the text response based on the user input
+    response_text = chatbot_responses.get(user_message.lower(), "Sorry, I didn't understand that.")
+    
+    # Convert the response text to speech
+    tts = gTTS(text=response_text, lang='en')
+    
+    # Save the speech to a file
+    speech_file = 'media/response.mp3'
+    tts.save(speech_file)
+    
+
+    return response_text, f'/media/{speech_file.split("/")[-1]}'
+
+from decimal import Decimal
+def convert_decimals_to_floats(data):
+    if isinstance(data, list):
+        # Recursively process each item in a list
+        return [convert_decimals_to_floats(item) for item in data]
+    elif isinstance(data, dict):
+        # Recursively process each value in a dictionary
+        return {key: convert_decimals_to_floats(value) for key, value in data.items()}
+    elif isinstance(data, Decimal):
+        # Convert Decimal to float
+        return float(data)
+    else:
+        # Return other types as is
+        return data
 
 @login_required
 def useranalytics(request):
-    # Data preparation
-    workout_durations = list(WellnessTable.objects.values('day', 'workout_duration'))
-    food_counts = WellnessTable.objects.values('type_of_food').annotate(count=models.Count('type_of_food'))
-    sleep_heatmap = WellnessTable.objects.values_list('day', 'sleep_duration_hours')
-    alcohol_counts = WellnessTable.objects.values('alcohol_consumption').annotate(count=models.Count('alcohol_consumption'))
-    smoking_counts = WellnessTable.objects.values('smoking_habit').annotate(count=models.Count('smoking_habit'))
+    # Get the logged-in user
+    user = request.user
 
-    # Debugging: Print the raw data
-    print("Workout Durations:", workout_durations)
-    print("Food Counts:", list(food_counts))
-    print("Sleep Heatmap:", list(sleep_heatmap))
-    print("Alcohol Counts:", list(alcohol_counts))
-    print("Smoking Counts:", list(smoking_counts))
+    # Query data specific to the logged-in user
+    workout_durations = list(WellnessTable.objects.filter(user=user).values('day', 'workout_duration'))
+    food_counts = WellnessTable.objects.filter(user=user).values('type_of_food').annotate(count=models.Count('type_of_food'))
+    sleep_heatmap = WellnessTable.objects.filter(user=user).values_list('day', 'sleep_duration_hours')
+    alcohol_counts = WellnessTable.objects.filter(user=user).values('alcohol_consumption').annotate(count=models.Count('alcohol_consumption'))
+    smoking_counts = WellnessTable.objects.filter(user=user).values('smoking_habit').annotate(count=models.Count('smoking_habit'))
+    
+    # New queries for water intake and screen time
+    water_intake = WellnessTable.objects.filter(user=user).values('day', 'water_intake_liters')
+    screen_time = WellnessTable.objects.filter(user=user).values('day', 'screen_time')
 
     # Prepare the data structures for JSON
     workout_data = {
@@ -494,12 +540,25 @@ def useranalytics(request):
     alcohol_data = {entry['alcohol_consumption']: entry['count'] for entry in alcohol_counts}
     smoking_data = {entry['smoking_habit']: entry['count'] for entry in smoking_counts}
 
-    # Debugging: Print the prepared JSON data
-    print("Workout Data:", workout_data)
-    print("Food Data:", food_data)
-    print("Sleep Data:", sleep_data)
-    print("Alcohol Data:", alcohol_data)
-    print("Smoking Data:", smoking_data)
+    # Prepare the new data for water intake and screen time
+    water_data = {
+        'days': [entry['day'] for entry in water_intake],
+        'water': [entry['water_intake_liters'] for entry in water_intake]
+    }
+
+    screen_time_data = {
+        'days': [entry['day'] for entry in screen_time],
+        'screen_time': [entry['screen_time'] for entry in screen_time]
+    }
+
+    # Convert all Decimal data to float
+    workout_data = convert_decimals_to_floats(workout_data)
+    food_data = convert_decimals_to_floats(food_data)
+    sleep_data = convert_decimals_to_floats(sleep_data)
+    alcohol_data = convert_decimals_to_floats(alcohol_data)
+    smoking_data = convert_decimals_to_floats(smoking_data)
+    water_data = convert_decimals_to_floats(water_data)
+    screen_time_data = convert_decimals_to_floats(screen_time_data)
 
     # Send JSON data to template
     context = {
@@ -507,13 +566,14 @@ def useranalytics(request):
         'food_counts': json.dumps(food_data),
         'sleep_heatmap': json.dumps(sleep_data),
         'alcohol_counts': json.dumps(alcohol_data),
-        'smoking_counts': json.dumps(smoking_data)
+        'smoking_counts': json.dumps(smoking_data),
+        'water_data': json.dumps(water_data),
+        'screen_time_data': json.dumps(screen_time_data),
     }
-    
+
     return render(request, 'userdashboard/useranalytics.html', context)
 
-def get_chatbot_response(user_message):
-    return chatbot_responses.get(user_message, "Sorry, I didn't understand that.")
+
 
 def trainer_consulting(request):
     return render(request, 'userdashboard/trainer_consulting.html')
@@ -559,3 +619,54 @@ def trainer_login(request):
             return HttpResponse("Invalid credentials", status=400)  # If authentication fails
 
     return render(request, 'trainer/trainerlogin.html')
+
+
+import pickle
+import random
+from django.shortcuts import render
+
+# Load model only once when the server starts
+with open("model.pkl", "rb") as model_file:
+    model = pickle.load(model_file)
+
+# List of possible condition combinations for predictions
+condition_combinations = [
+    "Cardiovascular Disease, Diabetes",
+    "Cardiovascular Disease, Liver Disease",
+    "Cardiovascular Disease, Liver Disease, Diabetes",
+    "Cardiovascular Disease, Liver Disease, Mental Health Issues",
+    "Cardiovascular Disease, Mental Health Issues",
+    "Diabetes",
+    "Liver Disease",
+    "Liver Disease, Diabetes",
+    "Mental Health Issues",
+    "Mental Health Issues, Cardiovascular Disease, Diabetes",
+    "Mental Health Issues, Cardiovascular Disease, Liver Disease, Diabetes",
+    "Mental Health Issues, Diabetes",
+    "Mental Health Issues, Liver Disease",
+    "Mental Health Issues, Liver Disease, Diabetes",
+    "Mental Health Issues, Respiratory Disease, Cardiovascular Disease, Diabetes",
+    "None",
+    "Respiratory Disease",
+    "Respiratory Disease, Cardiovascular Disease",
+    "Respiratory Disease, Cardiovascular Disease, Diabetes",
+    "Respiratory Disease, Cardiovascular Disease, Liver Disease",
+    "Respiratory Disease, Cardiovascular Disease, Liver Disease, Diabetes",
+    "Respiratory Disease, Cardiovascular Disease, Liver Disease, Mental Health Issues",
+    "Respiratory Disease, Cardiovascular Disease, Liver Disease, Mental Health Issues, Diabetes",
+    "Respiratory Disease, Cardiovascular Disease, Mental Health Issues",
+    "Respiratory Disease, Diabetes",
+    "Respiratory Disease, Liver Disease",
+    "Respiratory Disease, Liver Disease, Diabetes",
+    "Respiratory Disease, Mental Health Issues",
+    "Respiratory Disease, Mental Health Issues, Diabetes",
+    "Respiratory Disease, Mental Health Issues, Liver Disease",
+    "Respiratory Disease, Mental Health Issues, Liver Disease, Diabetes",
+]
+
+def predict_view(request):
+    # Generate a random prediction from the condition combinations list
+    prediction = random.choice(condition_combinations)
+
+    # Render the prediction to the template
+    return render(request, "userdashboard/userprediciton.html", {"prediction": prediction})

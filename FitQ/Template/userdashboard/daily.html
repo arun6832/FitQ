@@ -32,10 +32,11 @@
                 <img src="https://randomuser.me/api/portraits/lego/2.jpg" alt="Default Avatar" class="profile-image">
                 {% endif %}
                 <div class="sidebar-user-name">
-                    {{ request.user.username }} <!-- Use the logged-in user's username -->
+                    {{ request.user.username }}
                 </div>
             </div>
         </div>
+
         <!-- SIDEBAR MENU -->
         <ul class="sidebar-menu">
             <li>
@@ -50,22 +51,22 @@
                     <span>Analytics</span>
                 </a>
             </li>
-            <li class="sidebar-submenu"  class="active">
-                <a href="{% url 'edit_profile' %}" class="sidebar-menu-dropdown">
+            <li class="sidebar-submenu active">
+                <a href="{% url 'edit_profile' %}">
                     <i class='bx bx-user-circle'></i>
                     <span>Edit Profile</span>
                 </a>
             </li>
             <li>
                 <a href="{% url 'trainer_consulting' %}">
-                    <i style="margin-left: 2px;" class="fa-duotone fa-solid fa-user-doctor fa-xl" style="--fa-primary-color: #0f0f0f; --fa-secondary-color: #000000;"></i>
-                    <span><b>Trainer Consulting</b></span>
+                    <i class="fa-solid fa-user-doctor fa-xl"></i>
+                    <span>Trainer Consulting</span>
                 </a>
             </li>
             <li>
                 <a href="{% url 'daily' %}">
-                    <i class="fa-solid fa-bars-progress fa-xl" style="color: #4b494a;"></i>
-                    <span><b>Monitoring</b></span>
+                    <i class="fa-solid fa-bars-progress fa-xl"></i>
+                    <span>Monitoring</span>
                 </a>
             </li>
             <li>
@@ -88,33 +89,48 @@
             </li>
             <li>
                 <a href="{% url 'index' %}">
-                    <i class='bx bx-chat'></i>
+                    <i class='bx bx-log-out'></i>
                     <span>Logout</span>
                 </a>
             </li>
-        <!-- END SIDEBAR MENU -->
+        </ul>
     </div>
+
     <div class="container">
         <h1 class="main-title">Wellness Tracker</h1>
 
-        <!-- Success Message for Each Day -->
-        {% if success_message %}
-        <div class="success-message">
-            <h2>{{ success_message }}</h2>
-        </div>
-        {% endif %}
-
+        <!-- If all days have been submitted, show completion message and details -->
         {% if completed %}
         <div class="completed-message">
             <h2>Congratulations! You have successfully completed all 7 days of the wellness tracker.</h2>
         </div>
-        {% else %}
+        
+        <!-- Display Submitted Data for Each Day -->
+        <h2>Your Submitted Details:</h2>
+        <ul class="submitted-data">
+            {% for day, details in submitted_data.items %}
+            <li><strong>Day {{ day }}:</strong></li>
+            <ul>
+                <li><strong>Sleep Duration:</strong> {{ details.sleep_duration }} hours</li>
+                <li><strong>Workout Duration:</strong> {{ details.workout_duration }}</li>
+                <li><strong>Problems During Day:</strong> {{ details.problems_during_day }}</li>
+                <li><strong>Water Intake:</strong> {{ details.water_intake }} liters</li>
+                <li><strong>Screen Time:</strong> {{ details.screen_time }} hours</li>
+                <li><strong>Food On Time:</strong> {{ details.food_on_time }}</li>
+                <li><strong>Type of Food:</strong> {{ details.type_of_food }}</li>
+                <li><strong>Smoking Habit:</strong> {{ details.smoking_habit }}</li>
+                <li><strong>Alcohol Consumption:</strong> {{ details.alcohol_consumption }}</li>
+            </ul>
+            {% endfor %}
+        </ul>
 
-        <!-- Wellness Tracking Form -->
+        <!-- If not all days are submitted, show the form for the next day -->
+        {% else %}
         <form id="wellnessForm" method="POST" action="{% url 'monitoring' %}" class="wellness-form">
             {% csrf_token %}
             <div class="form-container">
                 <h2>Fill Details for Day {{ current_day }}</h2>
+                <div id="loadingIndicator" style="display: none;">Submitting...</div>
 
                 <div class="form-group">
                     <label for="sleepDuration">Sleep Duration (hours):</label>
@@ -187,32 +203,20 @@
                     </select>
                 </div>
 
-                <button type="submit" class="submit-button">Submit Day {{ current_day }}'s Responses</button>
+                <div class="form-group">
+                    <button type="submit">Submit</button>
+                </div>
             </div>
         </form>
         {% endif %}
 
-        <!-- Display Submitted Data for Each Day -->
-        {% if submitted_data %}
-        <h2>Your Submitted Details:</h2>
-        <ul class="submitted-data">
-            {% for day, details in submitted_data.items %}
-            <li><strong>Day {{ day }}:</strong></li>
-            <ul>
-                <li><strong>Sleep Duration:</strong> {{ details.sleep_duration }} hours</li>
-                <li><strong>Workout Duration:</strong> {{ details.workout_duration }}</li>
-                <li><strong>Problems During Day:</strong> {{ details.problems_during_day }}</li>
-                <li><strong>Water Intake:</strong> {{ details.water_intake }} liters</li>
-                <li><strong>Screen Time:</strong> {{ details.screen_time }} hours</li>
-                <li><strong>Food On Time:</strong> {{ details.food_on_time }}</li>
-                <li><strong>Type of Food:</strong> {{ details.type_of_food }}</li>
-                <li><strong>Smoking Habit:</strong> {{ details.smoking_habit }}</li>
-                <li><strong>Alcohol Consumption:</strong> {{ details.alcohol_consumption }}</li>
-            </ul>
-            {% endfor %}
-        </ul>
-        {% endif %}
     </div>
+
+    <script>
+        document.getElementById('wellnessForm').addEventListener('submit', function() {
+            document.getElementById('loadingIndicator').style.display = 'block';
+        });
+    </script>
 </body>
 
 </html>

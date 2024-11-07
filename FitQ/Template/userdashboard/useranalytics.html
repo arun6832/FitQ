@@ -6,9 +6,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        User Dashboard
-    </title>
+    <title>User Dashboard</title>
     <link rel="shortcut icon" href="/images/logo-mb.png" type="image/png">
     <!-- GOOGLE FONT -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -23,14 +21,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> -->
-
 </head>
+
 <style>
     .charts-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        /* 2 columns */
         gap: 20px;
         max-width: 100%;
         margin: 0 auto;
@@ -46,7 +42,9 @@
     #food-chart,
     #sleep-heatmap,
     #alcohol-donut,
-    #smoking-radar {
+    #smoking-radar,
+    #water-chart,
+    #screen-time-chart {
         width: 100%;
         height: 100%;
     }
@@ -59,14 +57,12 @@
     }
 </style>
 
-
-
 <body>
 
     <!-- SIDEBAR -->
     <div class="sidebar">
         <div class="sidebar-logo">
-            <img src="{% static 'images/logo/FitQ.png'%}" alt="Comapny logo">
+            <img src="{% static 'images/logo/FitQ.png'%}" alt="Company logo">
             <div class="sidebar-close" id="sidebar-close">
                 <i class='bx bx-left-arrow-alt'></i>
             </div>
@@ -84,128 +80,24 @@
                     {{ request.user.username }} <!-- Use the logged-in user's username -->
                 </div>
             </div>
-
-
-
-
-
         </div>
         <!-- SIDEBAR MENU -->
         <ul class="sidebar-menu">
-            <li>
-                <a href="{% url 'userdashboard' %}">
-                    <i class='bx bx-home'></i>
-                    <span>Home</span>
-                </a>
+            <li><a href="{% url 'userdashboard' %}"><i class='bx bx-home'></i><span>Home</span></a></li>
+            <li><a href="{% url 'useranalytics' %}" class="active"><i class='bx bx-chart'></i><span>Analytics</span></a>
             </li>
-            <li>
-                <a href="{% url 'useranalytics' %}" class="active">
-                    <i class='bx bx-chart'></i>
-                    <span>analytics</span>
-                </a>
+            <li><a href="{% url 'edit_profile' %}"><i class='bx bx-user-circle'></i><span>Edit Profile</span></a></li>
+            <li><a href="{% url 'trainer_consulting' %}"><i
+                        class="fa-duotone fa-solid fa-user-doctor fa-xl"></i><span><b>Trainer Consulting</b></span></a>
             </li>
-            <li class="sidebar-submenu">
-                <a href="{% url 'edit_profile' %}">
-                    <i class='bx bx-user-circle'></i>
-                    <span>Edit Profile</span>
-                </a>
-            </li>
-
-            <!-- <li class="sidebar-submenu">
-                <a href="#" class="sidebar-menu-dropdown">
-                    <i class='bx bx-category'></i>
-                    <span>project</span>
-                    <div class="dropdown-icon"></div>
-                </a>
-                <ul class="sidebar-menu sidebar-menu-dropdown-content">
-                    <li>
-                        <a href="#">
-                            list
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            add project
-                        </a>
-                    </li>
-                </ul>
-            </li> -->
-            <!-- <li class="sidebar-submenu">
-                <a href="#" class="sidebar-menu-dropdown">
-                    <i class='bx bx-category'></i>
-                    <span>e-commerce</span>
-                    <div class="dropdown-icon"></div>
-                </a>
-                <ul class="sidebar-menu sidebar-menu-dropdown-content">
-                    <li>
-                        <a href="#">
-                            list product
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            add product
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            orders
-                        </a>
-                    </li>
-                </ul>
-            </li> -->
-            <li>
-                <a href="{% url 'trainer_consulting' %}">
-                    <i style="margin-left: 2px;" class="fa-duotone fa-solid fa-user-doctor fa-xl"
-                        style="--fa-primary-color: #0f0f0f; --fa-secondary-color: #000000;"></i>
-                    <span><b>Trainer Consulting</b></span>
-                </a>
-            </li>
-            <li>
-                <a href="{% url 'daily' %}">
-                    <i class="fa-solid fa-bars-progress fa-xl" style="color: #4b494a;"></i>
-                    <span><b>Monitoring</b></span>
-                </a>
-            </li>
-            <li>
-                <a href="{% url 'feedback' %}">
-                    <i class='bx bx-mail-send'></i>
-                    <span>Feedback</span>
-                </a>
-            </li>
-            <li>
-                <a href="{% url 'chatbot' %}">
-                    <i class='bx bx-chat'></i>
-                    <span>Chatbot</span>
-                </a>
-            </li>
-
-            <li>
-                <a href="{% url 'usercalender' %}">
-                    <i class='bx bx-calendar'></i>
-                    <span>calendar</span>
-                </a>
-            </li>
-            <li class="sidebar-submenu">
-                <a href="#" class="sidebar-menu-dropdown">
-                    <i class='bx bx-cog'></i>
-                    <span>settings</span>
-                    <div class="dropdown-icon"></div>
-                </a>
-                <ul class="sidebar-menu sidebar-menu-dropdown-content">
-                    <li>
-                        <a href="#" class="darkmode-toggle" id="darkmode-toggle">
-                            darkmode
-                            <span class="darkmode-switch"></span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
+            <li><a href="{% url 'daily' %}"><i class="fa-solid fa-bars-progress fa-xl"
+                        style="color: #4b494a;"></i><span><b>Monitoring</b></span></a></li>
+            <li><a href="{% url 'feedback' %}"><i class='bx bx-mail-send'></i><span>Feedback</span></a></li>
+            <li><a href="{% url 'chatbot' %}"><i class='bx bx-chat'></i><span>Chatbot</span></a></li>
+            <li><a href="{% url 'usercalender' %}"><i class='bx bx-calendar'></i><span>Calendar</span></a></li>
+            <li><a href="#" class="sidebar-menu-dropdown"><i class='bx bx-cog'></i><span>Settings</span></a></li>
         </ul>
-        <!-- END SIDEBAR MENU -->
     </div>
-    <!-- END SIDEBAR -->
-
     <!-- MAIN CONTENT -->
     <div class="main" style="margin-top: 100px;">
         <div class="charts-grid">
@@ -224,11 +116,15 @@
             <div class="chart-container">
                 <div id="smoking-radar"></div>
             </div>
+            <!-- New charts for Water Intake and Screen Time -->
+            <div class="chart-container">
+                <div id="water-chart"></div>
+            </div>
+            <div class="chart-container">
+                <div id="screen-time-chart"></div>
+            </div>
         </div>
     </div>
-
-
-    <!-- END MAIN CONTENT -->
 
     <div class="overlay"></div>
 
@@ -241,29 +137,15 @@
     <script src="https://code.highcharts.com/modules/heatmap.js"></script>
     <script src="https://code.highcharts.com/modules/pattern-fill.js"></script>
     <script src="https://code.highcharts.com/modules/polar.js"></script>
+
     <script>
-        function getGreeting() {
-            const now = new Date();
-            const hours = now.getHours();
-            let greeting = "";
-
-            if (hours < 12) {
-                greeting = "Good Morning Mate 😃";
-            } else if (hours >= 12 && hours < 17) {
-                greeting = "Good Afternoon Mate 😃";
-            } else {
-                greeting = "Good Evening Mate 😃";
-            }
-
-            document.getElementById("greeting").innerText = greeting;
-        }
-
-        // Call the function when the page loads
-        window.onload = getGreeting;
-
-        document.addEventListener('DOMContentLoaded', function () {
-            // Column Chart: Workout Duration by Day
+        window.onload = function () {
             const workoutData = JSON.parse('{{ workout_durations|safe }}');
+            console.log(workoutData); // Check for float conversion
+
+            // Similarly, handle other data like food_counts, water_data, etc.
+
+
             Highcharts.chart('workout-chart', {
                 chart: { type: 'column' },
                 title: { text: 'Workout Duration by Day' },
@@ -274,12 +156,11 @@
                     data: workoutData.workouts.map(duration =>
                         duration === "No workout" ? 0 :
                             duration === "15 minutes" ? 15 :
-                                duration === "45 minutes" ? 45 : 60 // 60 for "More than 45 minutes"
+                                duration === "45 minutes" ? 45 : 60
                     )
                 }]
             });
 
-            // Pie Chart: Food Type Distribution
             const foodData = JSON.parse('{{ food_counts|safe }}');
             Highcharts.chart('food-chart', {
                 chart: { type: 'pie' },
@@ -288,15 +169,14 @@
                     name: 'Food Type',
                     colorByPoint: true,
                     data: [
-                        { name: 'Healthy', y: foodData.Healthy || 0 },  // Default to 0 if not present
-                        { name: 'Junk', y: foodData.Junk || 0 }         // Default to 0 if not present
+                        { name: 'Healthy', y: foodData.Healthy || 0 },
+                        { name: 'Junk', y: foodData.Junk || 0 }
                     ]
                 }]
             });
 
-            // Heatmap: Sleep Duration by Day
             const sleepData = JSON.parse('{{ sleep_heatmap|safe }}');
-            const heatmapData = sleepData.map(entry => [entry[0], entry[1]]); // Ensure format [dayIndex, hours]
+            const heatmapData = sleepData.map(entry => [entry[0], entry[1]]);
             Highcharts.chart('sleep-heatmap', {
                 chart: { type: 'heatmap' },
                 title: { text: 'Sleep Duration Heatmap' },
@@ -309,65 +189,66 @@
                 },
                 series: [{
                     name: 'Sleep Duration',
-                    borderWidth: 1,
-                    data: heatmapData,
-                    dataLabels: { enabled: true, color: '#100000' }
+                    data: heatmapData
                 }]
             });
 
-            // Donut Chart: Alcohol Consumption
             const alcoholData = JSON.parse('{{ alcohol_counts|safe }}');
             Highcharts.chart('alcohol-donut', {
                 chart: { type: 'pie' },
                 title: { text: 'Alcohol Consumption' },
                 plotOptions: {
-                    pie: {
-                        innerSize: '50%', // Makes it a donut chart
-                        dataLabels: {
-                            enabled: true,
-                            format: '{point.name}: {point.y}'
-                        }
-                    }
+                    pie: { innerSize: '60%', depth: 45 }
                 },
                 series: [{
                     name: 'Alcohol Consumption',
                     colorByPoint: true,
                     data: [
-                        { name: 'Consumed', y: alcoholData.Consumed || 0 },  // Default to 0 if not present
-                        { name: 'Not Consumed', y: alcoholData.Not_Consumed || 0 } // Default to 0 if not present
+                        { name: 'Yes', y: alcoholData.Yes || 0 },
+                        { name: 'No', y: alcoholData.No || 0 }
                     ]
                 }]
             });
 
-            // Radar Chart: Smoking Habits
             const smokingData = JSON.parse('{{ smoking_counts|safe }}');
             Highcharts.chart('smoking-radar', {
-                chart: { polar: true, type: 'column' },
+                chart: { polar: true, type: 'line' },
                 title: { text: 'Smoking Habits' },
-                pane: { startAngle: 0, endAngle: 360 },
-                xAxis: {
-                    categories: ['Non-Smoker', 'Occasional Smoker', 'Regular Smoker', 'Heavy Smoker'],
-                    tickmarkPlacement: 'on',
-                    lineWidth: 0
-                },
-                yAxis: {
-                    title: { text: 'Number of Users' },
-                    gridLineInterpolation: 'polygon',
-                    lineWidth: 0
-                },
+                xAxis: { categories: ['Non-smoker', 'Occasional Smoker', 'Regular Smoker'], tickmarkPlacement: 'on' },
+                yAxis: { gridLineInterpolation: 'polygon', min: 0 },
                 series: [{
-                    name: 'Users',
-                    data: [
-                        smokingData.Non_Smoker || 0,
-                        smokingData.Occasional_Smoker || 0,
-                        smokingData.Regular_Smoker || 0,
-                        smokingData.Heavy_Smoker || 0
-                    ],
+                    name: 'Smoking Habits',
+                    data: [smokingData['Non-smoker'] || 0, smokingData['Occasional Smoker'] || 0, smokingData['Regular Smoker'] || 0],
                     pointPlacement: 'on'
                 }]
             });
-        });
 
+            // New chart for Water Intake
+            const waterData = JSON.parse('{{ water_data|safe }}');
+            Highcharts.chart('water-chart', {
+                chart: { type: 'column' },
+                title: { text: 'Water Intake by Day' },
+                xAxis: { categories: waterData.days, title: { text: 'Days' } },
+                yAxis: { title: { text: 'Water Intake (liters)' } },
+                series: [{
+                    name: 'Water Intake',
+                    data: waterData.water
+                }]
+            });
+
+            // New chart for Screen Time
+            const screenTimeData = JSON.parse('{{ screen_time_data|safe }}');
+            Highcharts.chart('screen-time-chart', {
+                chart: { type: 'column' },
+                title: { text: 'Screen Time by Day' },
+                xAxis: { categories: screenTimeData.days, title: { text: 'Days' } },
+                yAxis: { title: { text: 'Screen Time (hours)' } },
+                series: [{
+                    name: 'Screen Time',
+                    data: screenTimeData.screen_time
+                }]
+            });
+        };
     </script>
 
 </body>

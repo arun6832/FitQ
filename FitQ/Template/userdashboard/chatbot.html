@@ -112,21 +112,23 @@
 
     <script>
         const chatBox = document.getElementById('chat-box');
-
+    
         document.getElementById('sendButton').addEventListener('click', function() {
             const userMessage = document.getElementById('userInput').value;
             addMessageToChat('You', userMessage);
             fetchChatbotResponse(userMessage);
             document.getElementById('userInput').value = ''; // Clear input field
         });
-
+    
         function fetchChatbotResponse(message) {
             $.getJSON("{% url 'chatbot_response' %}", { message: message }, function(data) {
                 const response = data.response;
+                const audioUrl = data.audio_url;
                 addMessageToChat('Bot', response);
+                playAudio(audioUrl);  // Play the audio response
             });
         }
-
+    
         function addMessageToChat(sender, message) {
             const messageElement = document.createElement('div');
             messageElement.classList.add('chat-message');
@@ -134,7 +136,14 @@
             chatBox.appendChild(messageElement);
             chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom
         }
+    
+        // Function to play the audio response
+        function playAudio(url) {
+            const audio = new Audio(url);
+            audio.play();
+        }
     </script>
+    
 
     <style>
         .chat-container {

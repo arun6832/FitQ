@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Health Condition Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            background-color: #ffffff;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        h1 {
+            color: #333;
+        }
+        p.prediction {
+            font-size: 1.5em;
+            color: #007bff;
+            margin: 10px 0;
+            display: none; /* Hide prediction initially */
+        }
+        button {
+            font-size: 1em;
+            padding: 10px 20px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Health Condition Prediction</h1>
+        <button onclick="showPrediction()">Show Prediction</button>
+        <p id="predictionText" class="prediction">{{ prediction }}</p>
+    </div>
+
+    <script>
+        function showPrediction() {
+            // Show the prediction text
+            document.getElementById("predictionText").style.display = "block";
+            // Disable the button after clicking
+            document.querySelector("button").disabled = true;
+        }
+    </script>
+</body>
+</html>
