@@ -144,36 +144,135 @@
     </div>
 
 
-    <div class="table-container">
-        <h1>Trainer Consulting</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>Trainer ID</th>
-                    <th>Trainer Name</th>
-                    <th>Photo</th>
-                    <th>Specialization</th>
-                    <th>Book Option</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for trainer in trainers %}
-                <tr>
-                    <td>{{ trainer.user.id }}</td>
-                    <td>{{ trainer.user.email }}</td>
-                    <td><img src="{{ trainer.photo.url }}" alt="Trainer Photo"></td>
-                    <td>{{ trainer.specialization }}</td>
-                    <td><a href="#" class="book-btn">Book Now</a></td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="5">No trainers available for booking at the moment.</td>
-                </tr>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Trainer Consulting </title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f4;
+                margin: 0;
+                padding: 0;
+            }
+            .chat-container {
+                width: 100%;
+                max-width: 600px;
+                margin: 50px auto;
+                background-color: #fff;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                border-radius: 10px;
+                overflow: hidden;
+            }
+            .chat-header {
+                background-color: #007bff;
+                color: white;
+                padding: 15px;
+                text-align: center;
+            }
+            .chat-header h2 {
+                margin: 0;
+            }
+            .chat-messages {
+                padding: 20px;
+                height: 400px;
+                overflow-y: auto;
+                background-color: #f9f9f9;
+            }
+            .message-wrapper {
+                margin-bottom: 20px;
+            }
+            .message-header {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 5px;
+            }
+            .message-header .sender-name {
+                font-weight: bold;
+            }
+            .message-header .timestamp {
+                font-size: 12px;
+                color: gray;
+            }
+            .message-content {
+                padding: 10px;
+                border-radius: 15px 15px 0 15px;
+                word-wrap: break-word;
+                max-width: 80%;
+            }
+            .message-service {
+                background-color: #ececec;
+                color: black;
+                text-align: left;
+                border-radius: 15px 15px 15px 0;
+            }
+            .message-user {
+                background-color: #007bff;
+                color: white;
+                text-align: right;
+                border-radius: 15px 15px 0 15px;
+                margin-left: auto;
+            }
+            .chat-input {
+                display: flex;
+                padding: 15px;
+                background-color: #f4f4f4;
+                border-top: 1px solid #ddd;
+            }
+            .chat-input form {
+                width: 100%;
+                display: flex;
+                gap: 10px;
+            }
+            .chat-input input[type="text"] {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 20px;
+                outline: none;
+            }
+            .chat-input button {
+                padding: 10px 20px;
+                border: none;
+                background-color: #007bff;
+                color: white;
+                border-radius: 20px;
+                cursor: pointer;
+            }
+            .chat-input button:hover {
+                background-color: #0056b3;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="chat-container">
+            <header class="chat-header">
+                <h2>Trainer Consulting Chat </h2>
+            </header>
+            
+            <div class="chat-messages">
+                {% for message in messages %}
+                    <div class="message-wrapper">
+                        <div class="message-header">
+                            <span class="sender-name">{{ message.sender.username }}</span>
+                            <span class="timestamp">{{ message.timestamp|date:"H:i A" }}</span>
+                        </div>
+                        <p class="message-content {% if message.is_service_center %}message-service{% else %}message-user{% endif %}">
+                            {{ message.message }}
+                        </p>
+                    </div>
                 {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
+            </div>
+            
+            <div class="chat-input">
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="text" name="message" placeholder="Type your message here..." />
+                    <button type="submit">Send</button>
+                </form>
+            </div>
+        </div>
+    </body>
 </body>
 
 </html>
