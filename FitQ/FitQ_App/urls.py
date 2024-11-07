@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 from .views import *  # Import the view
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,4 +27,6 @@ urlpatterns = [
     path('useranalytics',useranalytics,name='useranalytics'),
     path('trainersignup/', trainer_signup, name='trainer_signup'),
     path('trainerlogin/',trainer_login, name='trainerlogin'), 
-]
+        path('predict/', predict_view, name='predict'),  # URL for the prediction page
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

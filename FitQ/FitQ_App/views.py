@@ -482,7 +482,22 @@ def chatbot(request):
 def chatbot_response(request):
     user_message = request.GET.get('message', '').lower()
     response = get_chatbot_response(user_message)
-    return JsonResponse({'response': response})
+    
+    return JsonResponse({'response': response[0], 'audio_url': response[1]})
+
+def get_chatbot_response(user_message):
+    # Get the text response based on the user input
+    response_text = chatbot_responses.get(user_message.lower(), "Sorry, I didn't understand that.")
+    
+    # Convert the response text to speech
+    tts = gTTS(text=response_text, lang='en')
+    
+    # Save the speech to a file
+    speech_file = 'media/response.mp3'
+    tts.save(speech_file)
+    
+
+    return response_text, f'/media/{speech_file.split("/")[-1]}'
 
 from decimal import Decimal
 def convert_decimals_to_floats(data):
@@ -558,8 +573,7 @@ def useranalytics(request):
 
     return render(request, 'userdashboard/useranalytics.html', context)
 
-def get_chatbot_response(user_message):
-    return chatbot_responses.get(user_message, "Sorry, I didn't understand that.")
+
 
 def trainer_consulting(request):
     return render(request, 'userdashboard/trainer_consulting.html')
@@ -605,3 +619,54 @@ def trainer_login(request):
             return HttpResponse("Invalid credentials", status=400)  # If authentication fails
 
     return render(request, 'trainer/trainerlogin.html')
+
+
+import pickle
+import random
+from django.shortcuts import render
+
+# Load model only once when the server starts
+with open("model.pkl", "rb") as model_file:
+    model = pickle.load(model_file)
+
+# List of possible condition combinations for predictions
+condition_combinations = [
+    "Cardiovascular Disease, Diabetes",
+    "Cardiovascular Disease, Liver Disease",
+    "Cardiovascular Disease, Liver Disease, Diabetes",
+    "Cardiovascular Disease, Liver Disease, Mental Health Issues",
+    "Cardiovascular Disease, Mental Health Issues",
+    "Diabetes",
+    "Liver Disease",
+    "Liver Disease, Diabetes",
+    "Mental Health Issues",
+    "Mental Health Issues, Cardiovascular Disease, Diabetes",
+    "Mental Health Issues, Cardiovascular Disease, Liver Disease, Diabetes",
+    "Mental Health Issues, Diabetes",
+    "Mental Health Issues, Liver Disease",
+    "Mental Health Issues, Liver Disease, Diabetes",
+    "Mental Health Issues, Respiratory Disease, Cardiovascular Disease, Diabetes",
+    "None",
+    "Respiratory Disease",
+    "Respiratory Disease, Cardiovascular Disease",
+    "Respiratory Disease, Cardiovascular Disease, Diabetes",
+    "Respiratory Disease, Cardiovascular Disease, Liver Disease",
+    "Respiratory Disease, Cardiovascular Disease, Liver Disease, Diabetes",
+    "Respiratory Disease, Cardiovascular Disease, Liver Disease, Mental Health Issues",
+    "Respiratory Disease, Cardiovascular Disease, Liver Disease, Mental Health Issues, Diabetes",
+    "Respiratory Disease, Cardiovascular Disease, Mental Health Issues",
+    "Respiratory Disease, Diabetes",
+    "Respiratory Disease, Liver Disease",
+    "Respiratory Disease, Liver Disease, Diabetes",
+    "Respiratory Disease, Mental Health Issues",
+    "Respiratory Disease, Mental Health Issues, Diabetes",
+    "Respiratory Disease, Mental Health Issues, Liver Disease",
+    "Respiratory Disease, Mental Health Issues, Liver Disease, Diabetes",
+]
+
+def predict_view(request):
+    # Generate a random prediction from the condition combinations list
+    prediction = random.choice(condition_combinations)
+
+    # Render the prediction to the template
+    return render(request, "userdashboard/userprediciton.html", {"prediction": prediction})
