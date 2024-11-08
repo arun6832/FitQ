@@ -10,9 +10,6 @@ FitQ is a wellness tracking application designed to help users monitor and impro
 - **Lifestyle Insights**: Track alcohol consumption and smoking habits.
 - **Data Visualization**: Interactive charts and graphs to visualize progress and trends.
 
-## Demo
-
-![FitQ Demo](link-to-your-demo-image.gif) *(Optional: You can provide a demo image or link to a live demo here)*
 
 ## Getting Started
 
